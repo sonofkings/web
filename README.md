@@ -1,7 +1,7 @@
 # Son of Kings
 
 Storefront for the Bullion Crest Tracksuit — a static site with no build step,
-no dependencies, and no third-party requests at runtime.
+no build step for the frontend, and server-side Stripe / PayPal checkout.
 
 ## Run it
 
@@ -58,11 +58,7 @@ Everything you would normally change lives in the `SITE` block at the top of
 
 ## Checkout
 
-There is no payment processor wired up. "Proceed to checkout" opens a
-pre-filled order email to `SITE.email` with the bag contents, sizes, and
-subtotal. To take card payments, replace the `#checkout` handler in
-`assets/js/site.js` with a call to Stripe Checkout (or similar) and keep the
-bag object as the line-item source.
+See the configuration below for server-side Stripe and PayPal payments.
 
 ## Notes
 
@@ -75,8 +71,8 @@ bag object as the line-item source.
 Tracksuits are USD 99.00 per set. `/api/checkout` creates Stripe prices on the server
 at 9900 cents and includes the selected size in each line item.
 
-The deployment must support Node serverless functions (the existing `api/` layout
-is compatible with Vercel). Keep `STRIPE_SECRET_KEY` configured for card checkout.
+Cloudflare Workers runs `worker.mjs`, which routes `/api/checkout` and `/api/paypal`
+to the payment handlers. `wrangler.jsonc` configures static assets and Node compatibility. Keep `STRIPE_SECRET_KEY` configured for card checkout.
 For PayPal, configure **server environment variables** `PAYPAL_CLIENT_ID` and
 `PAYPAL_CLIENT_SECRET` from the merchant's PayPal REST app. `PAYPAL_ENV=sandbox`
 selects sandbox; omit it for live payments. Never commit secrets. Redeploy after
