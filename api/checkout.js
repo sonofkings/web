@@ -1,4 +1,4 @@
-const PRICE_ID = 'price_1UHmMd0y7rc6eekMfkkoFPc7';
+const UNIT_AMOUNT = 9900;
 const SIZES = new Set(['S', 'M', 'L', 'XL', 'XXL']);
 
 module.exports = async function handler(req, res) {
@@ -39,7 +39,9 @@ module.exports = async function handler(req, res) {
     params.set('metadata[cart]', valid.map((item) => item.size + 'x' + item.quantity).join(','));
 
     valid.forEach((item, index) => {
-      params.set('line_items[' + index + '][price]', PRICE_ID);
+      params.set('line_items[' + index + '][price_data][currency]', 'usd');
+      params.set('line_items[' + index + '][price_data][unit_amount]', String(UNIT_AMOUNT));
+      params.set('line_items[' + index + '][price_data][product_data][name]', 'Son of Kings Black Tracksuit — Size ' + item.size);
       params.set('line_items[' + index + '][quantity]', String(item.quantity));
     });
 

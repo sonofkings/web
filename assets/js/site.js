@@ -6,86 +6,8 @@
   var on = function(el,t,fn,o){if(el)el.addEventListener(t,fn,o)};
   var money = function(n){return '$'+n.toFixed(2)};
 
-  /* Estrah-style deferred hero playback. The explicit control remains available
-     when autoplay is blocked by iOS Low Power Mode, reduced motion, or data saver. */
-  (function initHeroVideo(){
-    var video = $('#sok-hero-video');
-    var source = $('#sok-hero-source');
-    var button = $('#sok-hero-play');
-    if (!video || !source || !button) return;
-
-    var label = $('span', button);
-    var userPaused = false;
-    var startTimer;
-
-    function render(){
-      var playing = !video.paused && !video.ended;
-      button.style.display = 'flex';
-      button.setAttribute('aria-pressed', String(playing));
-      button.setAttribute('aria-label', playing ? 'Pause background video' : 'Play background video');
-      if (label) label.textContent = playing ? 'Pause video' : 'Play video';
-      button.classList.toggle('is-playing', playing);
-    }
-
-    function loadSource(){
-      if (!source.getAttribute('src') && source.getAttribute('data-src')) {
-        source.setAttribute('src', source.getAttribute('data-src'));
-        video.load();
-      }
-    }
-
-    function play(){
-      userPaused = false;
-      loadSource();
-      video.preload = 'auto';
-      var attempt = video.play();
-      if (attempt && attempt.catch) attempt.catch(render);
-    }
-
-    on(button, 'click', function(){
-      if (!video.paused) {
-        userPaused = true;
-        video.pause();
-      } else {
-        play();
-      }
-    });
-
-    ['play','playing','pause','waiting','ended'].forEach(function(eventName){
-      on(video, eventName, render, {passive:true});
-    });
-
-    function syncHeroMedia(){
-      clearTimeout(startTimer);
-      var hero = video.closest ? video.closest('.hero') : video;
-      var rect = hero.getBoundingClientRect();
-      var visible = !document.hidden && rect.bottom > 0 && rect.top < window.innerHeight;
-      if (!visible) {
-        video.pause();
-        return;
-      }
-      if (userPaused ||
-          window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-          (navigator.connection && navigator.connection.saveData)) {
-        render();
-        return;
-      }
-      startTimer = setTimeout(function(){
-        if (document.hidden) return;
-        play();
-      }, 1500);
-    }
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(syncHeroMedia).observe(video);
-    }
-    on(document, 'visibilitychange', syncHeroMedia);
-    render();
-    syncHeroMedia();
-  })();
-
   var SITE={
-    email:'MuhammadAsjad.RehmanHashmi@gmail.com', phone:'+18165911437', price:199.99, stripeCheckout:'https://buy.stripe.com/fZuaEPdAodYr0WX5PWfYY00',
+    email:'MuhammadAsjad.RehmanHashmi@gmail.com', phone:'+18165911437', price:99,
     sizes:['S','M','L','XL','XXL'], max:9,
     colors:{
       Black:{front:'assets/img/black-hoodie.webp',back:'assets/img/black-trousers.webp',available:true},
@@ -96,7 +18,7 @@
       Crimson:{front:'assets/enhanced/red-hoodie.webp',back:'assets/enhanced/red-pants.webp',available:false}
     }
   };
-  var KEY='sok.bag.v2', bag=load(), chosenSize='M', chosenColor='Black', qty=1;
+  var KEY='sok.bag.v2', bag=load(), chosenSize=null, chosenColor='Black', qty=1;
 
   function key(c,s){return c+'|'+s}
   function load(){try{var x=JSON.parse(localStorage.getItem(KEY)||'{}'),o={};Object.keys(x).forEach(function(k){var p=k.split('|'),q=parseInt(x[k],10);if(SITE.colors[p[0]]&&SITE.colors[p[0]].available&&SITE.sizes.indexOf(p[1])>-1&&q>0)o[k]=Math.min(q,SITE.max)});return o}catch(e){return {}}}
@@ -145,11 +67,11 @@
     var add=$('#add-to-bag');if(add){add.textContent=available?'Add '+c+' set — '+money(SITE.price):c+' — Out of stock';add.disabled=!available}
     var buybarAdd=$('#buybar-add');if(buybarAdd){buybarAdd.disabled=!available;buybarAdd.textContent=available?'Add to bag':'Out of stock'}
     cards.forEach(function(card){var active=card.dataset.color===c;card.setAttribute('aria-pressed',active?'true':'false');card.dataset.selected=active?'true':'false'});
-    var bar=$('#buybar-size');if(bar)bar.textContent=c+' · '+(available?'Size '+chosenSize:'Out of stock');
+    var bar=$('#buybar-size');if(bar)bar.textContent=c+' · '+(available?(chosenSize?'Size '+chosenSize:'Choose a size'):'Out of stock');
   }
 
   var sizeBtns=$$('.size');
-  function setSize(s){chosenSize=s;sizeBtns.forEach(function(b){var a=b.dataset.size===s;b.setAttribute('aria-checked',a?'true':'false');b.tabIndex=a?0:-1});var x=$('#size-current');if(x)x.textContent=s;var bar=$('#buybar-size');if(bar)bar.textContent=chosenColor+' · '+(SITE.colors[chosenColor].available?'Size '+s:'Out of stock')}
+  function setSize(s){chosenSize=s;sizeBtns.forEach(function(b){var a=b.dataset.size===s;b.setAttribute('aria-checked',a?'true':'false');b.tabIndex=a||(!s&&b.dataset.size==='S')?0:-1});var x=$('#size-current');if(x)x.textContent=s||'Select your size';var bar=$('#buybar-size');if(bar)bar.textContent=chosenColor+' · '+(SITE.colors[chosenColor].available?(s?'Size '+s:'Choose a size'):'Out of stock')}
   sizeBtns.forEach(function(b,i){on(b,'click',function(){setSize(b.dataset.size)});on(b,'keydown',function(e){var d=/Right|Down/.test(e.key)?1:/Left|Up/.test(e.key)?-1:0;if(!d)return;e.preventDefault();var n=sizeBtns[(i+d+sizeBtns.length)%sizeBtns.length];setSize(n.dataset.size);n.focus()})});
   function setQty(n){qty=Math.max(1,Math.min(SITE.max,n));var o=$('#qty-value');if(o)o.textContent=qty;var d=$('#qty-dec'),i=$('#qty-inc');if(d)d.disabled=qty<=1;if(i)i.disabled=qty>=SITE.max}
   on($('#qty-dec'),'click',function(){setQty(qty-1)});on($('#qty-inc'),'click',function(){setQty(qty+1)});
@@ -163,9 +85,9 @@
     if(!bagBody)return;bagBody.replaceChildren();var ks=Object.keys(bag);if(!ks.length){var p=document.createElement('p');p.className='bag__empty';p.textContent='Nothing selected yet';bagBody.appendChild(p);return}
     ks.forEach(function(k){bagBody.appendChild(lineFor(k))})
   }
-  function lineFor(k){var p=k.split('|'),c=p[0],s=p[1],n=bag[k],line=document.createElement('div');line.className='line';var art=document.createElement('div');art.className='line__art';var img=document.createElement('img');img.src=SITE.colors[c].front;img.alt='';img.loading='lazy';art.appendChild(img);var body=document.createElement('div');body.className='line__body';var name=document.createElement('p');name.className='line__name';name.textContent=productName(c);var meta=document.createElement('p');meta.className='line__meta';meta.textContent='Size '+s+' · '+money(SITE.price*n);var f=document.createElement('div');f.className='line__foot';var q=document.createElement('div');q.className='line__qty';var minus=document.createElement('button');minus.type='button';minus.innerHTML='&minus;';minus.onclick=function(){setLine(k,n-1)};var out=document.createElement('output');out.textContent=n;var plus=document.createElement('button');plus.type='button';plus.textContent='+';plus.disabled=n>=SITE.max;plus.onclick=function(){setLine(k,n+1)};q.append(minus,out,plus);var rem=document.createElement('button');rem.type='button';rem.className='line__remove';rem.textContent='Remove';rem.onclick=function(){setLine(k,0)};f.append(q,rem);body.append(name,meta,f);line.append(art,body);return line}
+  function lineFor(k){var p=k.split('|'),c=p[0],s=p[1],n=bag[k],line=document.createElement('div');line.className='line';var art=document.createElement('div');art.className='line__art';var img=document.createElement('img');img.src=SITE.colors[c].front;img.alt='';img.loading='lazy';art.appendChild(img);var body=document.createElement('div');body.className='line__body';var name=document.createElement('p');name.className='line__name';name.textContent=productName(c);var meta=document.createElement('p');meta.className='line__meta';meta.textContent=(s?'Size '+s:'Choose a size')+' · '+money(SITE.price*n);var f=document.createElement('div');f.className='line__foot';var q=document.createElement('div');q.className='line__qty';var minus=document.createElement('button');minus.type='button';minus.setAttribute('aria-label','Decrease quantity for size '+s);minus.innerHTML='&minus;';minus.onclick=function(){setLine(k,n-1)};var out=document.createElement('output');out.textContent=n;var plus=document.createElement('button');plus.type='button';plus.setAttribute('aria-label','Increase quantity for size '+s);plus.textContent='+';plus.disabled=n>=SITE.max;plus.onclick=function(){setLine(k,n+1)};q.append(minus,out,plus);var rem=document.createElement('button');rem.type='button';rem.className='line__remove';rem.textContent='Remove';rem.onclick=function(){setLine(k,0)};f.append(q,rem);body.append(name,meta,f);line.append(art,body);return line}
   function setLine(k,n){if(n<=0)delete bag[k];else bag[k]=Math.min(n,SITE.max);save();renderBag()}
-  function add(n){if(!SITE.colors[chosenColor].available)return;var k=key(chosenColor,chosenSize),cur=bag[k]||0,next=Math.min(cur+n,SITE.max);if(next===cur)return;bag[k]=next;save();renderBag();setBag(true)}
+  function add(n){if(!chosenSize){var status=$('#toast');status.textContent='Please choose your size first.';status.classList.add('is-visible');setTimeout(function(){status.classList.remove('is-visible')},3500);$('#size-list').scrollIntoView({block:'center',behavior:'smooth'});sizeBtns[0].focus();return}if(!SITE.colors[chosenColor].available)return;var k=key(chosenColor,chosenSize),cur=bag[k]||0,next=Math.min(cur+n,SITE.max);if(next===cur)return;bag[k]=next;save();renderBag();setBag(true)}
   function setBag(v){if(v)openSheet(bagEl,$('#bag-close'));else closeSheet(bagEl)}
   on($('#bag-open'),'click',function(){setBag(true)});on($('#bag-close'),'click',function(){setBag(false)});$$('[data-bag-close]').forEach(function(x){on(x,'click',function(){setBag(false)})});on($('#add-to-bag'),'click',function(){add(qty)});on($('#buybar-add'),'click',function(){add(1)});
   on(document,'keydown',function(e){if(e.key==='Escape'){if(bagEl&&!bagEl.hidden)setBag(false);else if(mobile&&!mobile.hidden)setNav(false)}});
@@ -177,7 +99,8 @@
   var et=$('#editions-title');if(et)et.innerHTML='Explore every <em>color.</em>';
   $$('.faq__list details').forEach(function(d){var s=$('summary',d);if(s&&/Black the only edition|Which colors are available/i.test(s.textContent)){s.textContent='Which colors are available?';var p=$('p',d);if(p)p.textContent='Black is currently available to order. Navy, Royal Blue, Forest Green, Marble and Crimson are shown as colorways but are currently out of stock.'}if(s&&/What is included/i.test(s.textContent)){var p2=$('p',d);if(p2)p2.textContent='One hoodie and one matching pair of trousers in your selected available color. They are sold together as a set.'}});
 
-  var buybar=$('#buybar'),product=$('#product');if(buybar&&product&&'IntersectionObserver'in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){buybar.dataset.shown=e.isIntersecting?'true':'false';buybar.setAttribute('aria-hidden',e.isIntersecting?'false':'true')})},{rootMargin:'-40% 0px -20% 0px'});io.observe(product)}
+  var buybar=$('#buybar'),product=$('#product');if(buybar&&product&&'IntersectionObserver'in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){buybar.dataset.shown=e.isIntersecting?'true':'false';buybar.setAttribute('aria-hidden',e.isIntersecting?'false':'true');$('#buybar-add').tabIndex=e.isIntersecting?0:-1})},{rootMargin:'-40% 0px -20% 0px'});io.observe(product)}
 
-  var year=$('#year');if(year)year.textContent=new Date().getFullYear();setColor('Black');setSize('M');setQty(1);save();renderBag();
+  on(document,'keydown',function(e){if(e.key!=='Tab')return;var sheet=bagEl&&!bagEl.hidden?bagEl:mobile&&!mobile.hidden?mobile:null;if(!sheet)return;var f=$$('a[href],button:not([disabled]),[tabindex="0"]',sheet).filter(function(el){return el.offsetParent!==null});if(!f.length)return;if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus()}});
+  var year=$('#year');if(year)year.textContent=new Date().getFullYear();setColor('Black');setSize(null);setQty(1);save();renderBag();
 })();

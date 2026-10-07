@@ -70,3 +70,20 @@ bag object as the line-item source.
   discards anything that is not a size the shop actually sells.
 - The crest is the only raster asset: a 960px palette PNG at 113 KB.
 - Honours `prefers-reduced-motion`; drawers trap focus and close on Escape.
+
+## October 2026 checkout update
+Tracksuits are USD 99.00 per set. `/api/checkout` creates Stripe prices on the server
+at 9900 cents and includes the selected size in each line item.
+
+The deployment must support Node serverless functions (the existing `api/` layout
+is compatible with Vercel). Keep `STRIPE_SECRET_KEY` configured for card checkout.
+For PayPal, configure **server environment variables** `PAYPAL_CLIENT_ID` and
+`PAYPAL_CLIENT_SECRET` from the merchant's PayPal REST app. `PAYPAL_ENV=sandbox`
+selects sandbox; omit it for live payments. Never commit secrets. Redeploy after
+configuration. GET `/api/paypal` exposes only the public client ID and availability.
+The browser creates and captures orders through the server; prices and valid sizes
+are enforced server-side, and capture verifies an HMAC-signed purchase unit, USD
+amount, U.S. shipping address, and completed capture status. PayPal transaction
+records include size, quantity, and shipping details for merchant fulfillment.
+If PayPal is not configured, checkout clearly says so and keeps card checkout usable.
+Test sandbox approval, cancellation, errors and duplicate capture before enabling live.
