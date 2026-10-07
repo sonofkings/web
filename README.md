@@ -83,3 +83,11 @@ amount, U.S. shipping address, and completed capture status. PayPal transaction
 records include size, quantity, and shipping details for merchant fulfillment.
 If PayPal is not configured, checkout clearly says so and keeps card checkout usable.
 Test sandbox approval, cancellation, errors and duplicate capture before enabling live.
+
+## Active hosted PayPal checkout
+The storefront uses verified reusable PayPal link `PLB-2FCAQUF5Q4CB` at USD 99,
+with size variants S–XXL, quantities 1–9 and shipping address collection.
+`assets/js/checkout.js` links to PayPal; shoppers must reselect size and quantity.
+Multiple sizes require separate hosted checkouts. The return page does not infer
+payment success or clear the bag. PayPal receipts and merchant transactions are
+the payment source of truth. The optional API integration remains dormant.
