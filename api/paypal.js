@@ -5,7 +5,7 @@ const signature = (invoice, amount) => createHmac('sha256', process.env.PAYPAL_C
 module.exports = async (req,res) => {
   res.setHeader('Cache-Control','no-store');
   const configured = Boolean(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET);
-  if(req.method === 'GET') return res.status(200).json({configured,clientId:configured?process.env.PAYPAL_CLIENT_ID:null});
+  if(req.method === 'GET') return res.status(200).json({configured,cardConfigured:Boolean(process.env.STRIPE_SECRET_KEY),clientId:configured?process.env.PAYPAL_CLIENT_ID:null});
   if(req.method !== 'POST') return res.status(405).json({error:'Method not allowed'});
   if(!configured) return res.status(503).json({error:'PayPal is not available yet. Please use card checkout.'});
   try {
