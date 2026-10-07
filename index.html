@@ -90,13 +90,14 @@
 <main id="main">
 
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero__product"><img src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie with gold crest" fetchpriority="high" width="800" height="1000"><span class="hero__product-label">THE CREST TRACKSUIT / BLACK</span></div>
+    <div class="hero__product"><img src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie with gold crest" fetchpriority="high" width="800" height="1000"><img class="hero__trousers" src="assets/img/black-trousers.webp" alt="Matching black tracksuit trousers" width="600" height="800" decoding="async"><span class="hero__product-label">THE COMPLETE SET · HOODIE + TROUSERS</span></div>
     <div class="hero__body">
-      <p class="eyebrow hero__eyebrow">THE BLACK EDITION</p>
-      <h1 id="hero-title">Built for the <em>crown.</em></h1>
-      <p class="hero__intro">One complete set. A signature all your own.<br>Discover the black hoodie and matching trousers.</p><div class="hero__cta">
+      <p class="eyebrow hero__eyebrow">SON OF KINGS / THE BLACK EDITION</p>
+      <h1 id="hero-title">Wear your<br><em>legacy.</em></h1>
+      <p class="hero__intro">The complete black tracksuit. Signature gold details.<br>Made to move through your every day.</p><div class="hero__cta">
         <a class="btn btn--gold" href="#product">SHOP THE SET — $99</a>
         <a class="btn btn--ghost" href="#atelier">EXPLORE THE DETAILS</a>
+        <p class="hero__assurance">$99 USD / Hoodie + trousers / Sizes S–XXL</p>
       </div>
     </div>
   </section>
@@ -115,6 +116,7 @@
 
       <div class="gallery">
         <div class="gallery__stage">
+          <button class="gallery__zoom" id="zoom-open" type="button" aria-haspopup="dialog">↗ Enlarge image</button>
           
 
           <figure class="plate plate--front" id="plate-front" data-active="true">
@@ -169,7 +171,7 @@
             <button class="sizes__toggle" id="guide-toggle" type="button" aria-expanded="false" aria-controls="size-guide">Size guide</button>
           </div>
 
-          <div class="size-list" id="size-list" role="radiogroup" aria-label="Choose a size">
+          <div class="size-list" id="size-list" role="radiogroup" aria-label="Choose a size" aria-describedby="size-feedback">
             <button class="size" type="button" role="radio" aria-checked="false" data-size="S" tabindex="-1">S</button>
             <button class="size" type="button" role="radio" aria-checked="false" data-size="M">M</button>
             <button class="size" type="button" role="radio" aria-checked="false" data-size="L" tabindex="-1">L</button>
@@ -177,6 +179,7 @@
             <button class="size" type="button" role="radio" aria-checked="false" data-size="XXL" tabindex="-1">XXL</button>
           </div>
 
+          <p id="size-feedback" class="size-feedback" role="status">Choose your size. Need help? Open the size guide above.</p>
           <div class="guide" id="size-guide" hidden>
             <p class="guide__head">Size guide — body measurements (inches)</p>
             <div class="guide__table-wrap">
@@ -331,7 +334,7 @@
       <h2 class="h2" id="club-title" style="max-width:22ch">Stay in the know.</h2>
       <p class="lede">Be first to hear about new Son of Kings releases and product updates.</p>
       <div class="club__actions">
-        <a class="btn btn--gold" id="club-sms" href="#">Text</a>
+        <a class="btn btn--gold" id="club-sms" href="#">Get release updates</a>
       </div>
       <p class="club__note" id="club-note">Opens a message with your request ready to send.</p>
     </div>
@@ -409,6 +412,11 @@
 }
 </script>
 
+<dialog id="image-zoom" class="image-zoom" aria-labelledby="zoom-title">
+  <div class="image-zoom__bar"><h2 id="zoom-title">A closer look</h2><button id="zoom-close" class="icon-btn" type="button" aria-label="Close enlarged image">×</button></div>
+  <img id="zoom-image" alt="">
+  <p>Use your browser’s zoom for a closer look at the details.</p>
+</dialog>
 <script src="assets/js/site.js" defer></script>
 </body>
 </html>
