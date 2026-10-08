@@ -7,7 +7,7 @@
   var money = function(n){return '$'+n.toFixed(2)};
 
   var SITE={
-    email:'MuhammadAsjad.RehmanHashmi@gmail.com', phone:'+18165911437', price:99,
+    email:'sonofkings591@gmail.com', phone:'+18165911437', price:99,
     sizes:['S','M','L','XL','XXL'], max:9,
     colors:{
       Black:{front:'assets/img/black-hoodie.webp',back:'assets/img/black-trousers.webp',available:true},
