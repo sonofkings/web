@@ -69,8 +69,8 @@
     var colorCurrent=$('#color-current');if(colorCurrent)colorCurrent.textContent=c;
     $$('[data-color-choice]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.colorChoice===c))});chosenColor=c;var ph=SITE.colors[c],available=ph.available;setPlate('front',ph.front,c);setPlate('back',ph.back,c);$$('.plate--set .set-hoodie').forEach(function(img){img.src=ph.front;img.alt=c+' Son of Kings hoodie'});$$('.plate--set .set-trousers').forEach(function(img){img.src=ph.back;img.alt=c+' Son of Kings trousers'});showView('set');
     var eyebrow=$('.detail__head .eyebrow');if(eyebrow)eyebrow.textContent='SON OF KINGS · '+c.toUpperCase();
-    var title=$('#product-title');if(title)title.innerHTML='Tracksuit<br><em>in '+c+'</em>';
-    var lede=$('.detail > .lede');if(lede)lede.textContent=c+' hoodie and trousers made from 70% recycled polyester and 30% organic cotton, with gold hardware and the Son of Kings crest.';
+    var title=$('#product-title');if(title)title.textContent='Crest Tracksuit';
+    var lede=$('.detail > .lede');if(lede)lede.textContent='Your complete '+c.toLowerCase()+' set, finished with a gold crest and matching hardware. One hoodie. One pair of trousers.';
     var stock=$('.detail__head .stock');if(stock){stock.className=available?'stock stock--live':'stock';stock.innerHTML='<span></span>'+(available?'Available to order':'Out of stock')}
     var add=$('#add-to-bag');if(add){add.textContent=available?'Add '+c+' set — '+money(SITE.price):c+' — Out of stock';add.disabled=!available}
     var buybarAdd=$('#buybar-add');if(buybarAdd){buybarAdd.disabled=!available;buybarAdd.textContent=available?'Add to bag':'Out of stock'}
@@ -107,8 +107,8 @@
   function orderText(){var lines=Object.keys(bag).map(function(k){var p=k.split('|'),n=bag[k];return '  '+productName(p[0])+' — size '+p[1]+' × '+n+' — '+money(SITE.price*n)});return ['Hello, I would like to request this Son of Kings order:','',lines.join('\n'),'', 'Product subtotal: '+money(total()),'', 'Shipping name:','Address:','Phone:'].join('\n')}
   on($('#checkout'),'click',function(){if(!count())return;location.href='/checkout/';});
 
-  var eh=$('.editions__head .lede');if(eh)eh.textContent='Explore the Son of Kings palette. Black is available now; the remaining colorways are currently out of stock.';
-  var et=$('#editions-title');if(et)et.innerHTML='A color for <em>every mood.</em>';
+  var eh=$('.editions__head .lede');if(eh)eh.textContent='Black is ready to order. Explore the other colorways below.';
+  var et=$('#editions-title');if(et)et.textContent='The color lineup.';
   $$('.faq__list details').forEach(function(d){var s=$('summary',d);if(s&&/Black the only edition|Which colors are available/i.test(s.textContent)){s.textContent='Which colors are available?';var p=$('p',d);if(p)p.textContent='Black is currently available to order. Navy, Royal Blue, Forest Green, Marble and Crimson are shown as colorways but are currently out of stock.'}if(s&&/What is included/i.test(s.textContent)){var p2=$('p',d);if(p2)p2.textContent='One hoodie and one matching pair of trousers in your selected available color. They are sold together as a set.'}});
 
   var buybar=$('#buybar'),product=$('#product');

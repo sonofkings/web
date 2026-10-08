@@ -3,3 +3,5 @@
 
 .checkout-art{position:relative;flex:none;width:140px;height:170px;background:#222225;overflow:hidden}.checkout-art img:first-child{position:absolute;left:0;top:10px;width:95px;height:145px;background:none;mix-blend-mode:lighten}.checkout-art img:last-child{position:absolute;right:0;top:15px;width:58px;height:140px;background:none;mix-blend-mode:lighten}@media(max-width:800px){.checkout-art{width:110px;height:145px}.checkout-art img:first-child{width:75px;height:125px}.checkout-art img:last-child{width:43px;height:115px}}
 .checkout-art img:first-child,.checkout-art img:last-child{mix-blend-mode:normal}
+
+body{background:#fff;color:#171719}h1,h2,.wordmark{font-family:Jost,Arial,sans-serif;font-weight:600;letter-spacing:-.035em}.wordmark{font-size:20px}.checkout-header{border-color:#e6e6e6}.checkout-progress,.intro,.eyebrow{color:#666}.checkout-art{background:#eeeeeb;border-radius:8px}button{border-radius:5px}h1{font-size:40px}
