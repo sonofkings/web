@@ -28,3 +28,5 @@
 @media(max-width:359px){.gallery__pagination span{display:none}.gallery__pagination button{width:27px}.thumb{width:60px}.gallery__tools .thumbs{gap:8px}.buybar{padding-inline:12px;gap:7px}.buybar .btn{min-width:104px;padding-inline:9px;font-size:9px}.buybar select{width:60px;min-width:60px}}
 
 @media(max-width:430px){.gallery__tools{flex-wrap:wrap}.gallery__pagination{margin-left:auto}.gallery__pagination span{display:none}.gallery__pagination button{width:29px}.gallery__tools .thumbs{gap:8px}.thumb{width:62px;height:85px}.gallery__hint{margin-top:12px}}
+.footer{padding-bottom:110px}.hero__badge{top:25px;left:28px;right:auto;bottom:auto}@media(max-width:650px){.hero__badge{top:15px;left:20px;font-size:7px;padding-left:10px}.hero__badge b{font-size:6px}}
+.hero__product>img:first-child,.hero__trousers,.plate--set .set-hoodie,.plate--set .set-trousers{mix-blend-mode:normal}.plate--set .set-hoodie{left:0;top:9%;width:67%;height:82%}.plate--set .set-trousers{right:0;top:4%;width:46%;height:90%}.thumb .plate--set .set-trousers{width:45%;right:0}
