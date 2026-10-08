@@ -27,7 +27,7 @@
 
 <link rel="preload" href="assets/fonts/cinzel-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/jost-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/site.css?v=20261008">
+<link rel="stylesheet" href="assets/css/site.css?v=20261008-retail">
 </head>
 <body>
 
@@ -90,14 +90,14 @@
 <main id="main">
 
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero__product"><img src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie with gold crest" fetchpriority="high" width="800" height="1000"><img class="hero__trousers" src="assets/img/black-trousers.webp" alt="Matching black tracksuit trousers" width="600" height="800" decoding="async"><span class="hero__product-label">THE COMPLETE SET · HOODIE + TROUSERS</span></div>
+    <div class="hero__product"><span class="hero__badge">BLACK EDITION<br><b>HOODIE + TROUSERS</b></span><img src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie with gold crest" fetchpriority="high" width="800" height="1000"><img class="hero__trousers" src="assets/img/black-trousers.webp" alt="Matching black tracksuit trousers" width="600" height="800" decoding="async"><span class="hero__product-label">THE COMPLETE SET · HOODIE + TROUSERS</span></div>
     <div class="hero__body">
-      <p class="eyebrow hero__eyebrow">SON OF KINGS / THE BLACK EDITION</p>
+      <p class="eyebrow hero__eyebrow">THE SIGNATURE COLLECTION / 01</p>
       <h1 id="hero-title">Wear your<br><em>legacy.</em></h1>
       <p class="hero__intro">The complete black tracksuit. Signature gold details.<br>Made to move through your every day.</p><div class="hero__cta">
         <a class="btn btn--gold" href="#product">SHOP THE SET — $99</a>
         <a class="btn btn--ghost" href="#atelier">EXPLORE THE DETAILS</a>
-        <p class="hero__assurance">$99 USD / Hoodie + trousers / Sizes S–XXL</p>
+        <div class="hero__offer"><strong>$99<span> USD</span></strong><p>One hoodie. One pair of trousers.<br>Your complete signature set.</p></div>
       </div>
     </div>
   </section>
@@ -112,43 +112,10 @@
   </div>
 
   <section class="section shell" id="product" aria-labelledby="product-title">
+    <div class="product-heading"><p class="eyebrow">01 / THE SIGNATURE SET</p><p class="product-heading__title">Your everyday <em>signature.</em></p><span>Black &amp; gold. All yours.</span></div>
     <div class="product">
 
-      <div class="gallery">
-        <div class="gallery__stage">
-          <button class="gallery__zoom" id="zoom-open" type="button" aria-haspopup="dialog">↗ Enlarge image</button>
-          
-
-          <figure class="plate plate--front" id="plate-front" data-active="true">
-            <span class="plate__inner">
-              <img class="plate__photo" src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie" width="800" height="1000" decoding="async">
-            </span>
-            <figcaption class="plate__caption">Hoodie</figcaption>
-          </figure>
-
-          <figure class="plate plate--back" id="plate-back">
-            <span class="plate__inner">
-              
-              <img class="plate__photo" src="assets/img/black-trousers.webp" alt="Black Son of Kings trousers" width="600" height="800" loading="lazy" decoding="async">
-            </span>
-            <figcaption class="plate__caption">Trousers</figcaption>
-          </figure>
-
-          
-        </div>
-
-        <div class="thumbs" role="group" aria-label="Choose a view">
-          <button class="thumb" type="button" aria-pressed="true" data-view="front">
-            <span class="plate plate--front" aria-hidden="true"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-hoodie.webp" alt="" width="800" height="1000" loading="lazy" decoding="async"></span></span>
-            <span class="thumb-label">Hoodie</span>
-          </button>
-          <button class="thumb" type="button" aria-pressed="false" data-view="back">
-            <span class="plate plate--back" aria-hidden="true"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-trousers.webp" alt="" width="600" height="800" loading="lazy" decoding="async"></span></span>
-            <span class="thumb-label">Trousers</span>
-          </button>
-          
-        </div>
-      </div>
+<div class="gallery"><div class="gallery__stage" id="gallery-stage" role="region" aria-label="Product photography"><span class="gallery__tag">HOODIE + TROUSERS / $99</span><button class="gallery__zoom" id="zoom-open" type="button" aria-haspopup="dialog">↗ A closer look</button><figure class="plate plate--set" id="plate-set" data-active="true"><span class="plate__inner"><img class="plate__photo set-hoodie" src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie" width="800" height="1000"><img class="plate__photo set-trousers" src="assets/img/black-trousers.webp" alt="Matching black trousers" width="600" height="800"></span><figcaption class="plate__caption">Complete set</figcaption></figure><figure class="plate plate--front" id="plate-front"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-hoodie.webp" alt="Black Son of Kings hoodie" loading="lazy" width="800" height="1000"></span><figcaption class="plate__caption">Hoodie</figcaption></figure><figure class="plate plate--back" id="plate-back"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-trousers.webp" alt="Black Son of Kings trousers" loading="lazy" width="800" height="1000"></span><figcaption class="plate__caption">Trousers</figcaption></figure></div><div class="gallery__tools"><div class="thumbs" role="group" aria-label="Choose a view"><button class="thumb" type="button" aria-pressed="true" data-view="set"><span class="plate plate--set" aria-hidden="true"><span class="plate__inner"><img class="plate__photo set-hoodie" src="assets/img/black-hoodie.webp" alt="" loading="lazy"><img class="plate__photo set-trousers" src="assets/img/black-trousers.webp" alt="" loading="lazy"></span></span><span class="thumb-label">Complete set</span></button><button class="thumb" type="button" aria-pressed="false" data-view="front"><span class="plate plate--front" aria-hidden="true"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-hoodie.webp" alt="" loading="lazy"></span></span><span class="thumb-label">Hoodie</span></button><button class="thumb" type="button" aria-pressed="false" data-view="back"><span class="plate plate--back" aria-hidden="true"><span class="plate__inner"><img class="plate__photo" src="assets/img/black-trousers.webp" alt="" loading="lazy"></span></span><span class="thumb-label">Trousers</span></button></div><div class="gallery__pagination"><button id="gallery-prev" type="button" aria-label="Previous product photo">←</button><span id="gallery-count" role="status">01 / 03</span><button id="gallery-next" type="button" aria-label="Next product photo">→</button></div></div><p class="gallery__hint">One set. Two signature pieces. Tap a view to explore.</p></div>
 
       <div class="detail">
         <div class="detail__head">
@@ -182,7 +149,7 @@
 
           <p id="size-feedback" class="size-feedback" role="status">Choose your size. Need help? Open the size guide above.</p>
           <div class="guide" id="size-guide" hidden>
-            <p class="guide__head">Size guide — body measurements (inches)</p>
+            <div class="guide__heading"><p class="guide__head" id="guide-unit-label">Body measurements / inches</p><div class="guide__units" role="group" aria-label="Measurement units"><button type="button" data-unit="in" aria-pressed="true">IN</button><button type="button" data-unit="cm" aria-pressed="false">CM</button></div></div>
             <div class="guide__table-wrap">
               <table class="guide__table">
                 <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hip</th><th>Height</th></tr></thead>
@@ -208,6 +175,7 @@
           <button class="btn btn--gold" id="add-to-bag" type="button">Add Black set — $99.00</button>
         </div>
 
+        <p class="purchase-note" id="purchase-note">$99 USD for one complete set. Shipping and tax reviewed at checkout.</p>
         <ul class="terms" id="terms">
           <li><b>I</b><span>Secure payment through PayPal.</span></li>
           <li><b>II</b><span>Orders ship tracked within two business days.</span></li>
@@ -275,7 +243,7 @@
         <p class="eyebrow eyebrow--gold">Details</p>
         <h2 class="h2" id="atelier-title">The mark of<br><em>Son of Kings.</em></h2>
         <p class="lede" style="max-width:44ch">Black and gold, finished with the Son of Kings crest, gold hardware and sleeve detail.</p>
-        <a class="link-rule" href="#heritage">More information</a>
+        <div class="atelier__spec"><p><b>01</b><span>Gold-tone hardware</span></p><p><b>02</b><span>Signature crest</span></p><p><b>03</b><span>Matching trousers</span></p></div><a class="link-rule" href="#product">Find your fit ↗</a>
       </div>
     </div>
   </section>
@@ -372,6 +340,7 @@
       <a id="footer-email" href="mailto:sonofkings591@gmail.com">Email Son of Kings</a>
     </nav>
   </div>
+  <p class="footer__signature" aria-hidden="true">SON OF KINGS</p>
   <p class="footer__base">© <span id="year">2026</span> Son of Kings · All rights reserved</p>
 </footer>
 
@@ -392,8 +361,9 @@
   </aside>
 </div>
 
-<div class="buybar" id="buybar" aria-hidden="true">
-  <p class="buybar__price"><b>$99.00</b><span id="buybar-size">Choose a size</span></p>
+<div class="buybar" id="buybar" aria-hidden="true"><div class="buybar__product"><img src="assets/img/black-hoodie.webp" alt="" width="42" height="48"><span>Crest Tracksuit<small>Hoodie + trousers</small></span></div>
+  <p class="buybar__price"><b id="buybar-total">$99.00</b><span id="buybar-size">Choose a size</span></p>
+  <select id="buybar-select" aria-label="Choose size in purchase bar" tabindex="-1"><option value="">Size</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select>
   <button class="btn btn--gold" id="buybar-add" type="button" tabindex="-1">Add to bag</button>
 </div>
 
@@ -422,9 +392,9 @@
 
 <dialog id="image-zoom" class="image-zoom" aria-labelledby="zoom-title">
   <div class="image-zoom__bar"><h2 id="zoom-title">A closer look</h2><button id="zoom-close" class="icon-btn" type="button" aria-label="Close enlarged image">×</button></div>
-  <img id="zoom-image" alt="">
+  <div class="zoom-photos" id="zoom-photos"><img id="zoom-image" alt=""><img id="zoom-trousers" alt="" hidden></div>
   <p>Use your browser’s zoom for a closer look at the details.</p>
 </dialog>
-<script src="assets/js/site.js?v=20261008" defer></script>
+<script src="assets/js/site.js?v=20261008-retail" defer></script>
 </body>
 </html>

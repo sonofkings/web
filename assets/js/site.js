@@ -35,16 +35,20 @@
 
   var sheetFocus=new WeakMap(), locks=0, mobile=$('#mobile-nav'), bagEl=$('#bag');
   function lock(n){locks=Math.max(0,locks+n);document.body.dataset.locked=locks?'true':'false'}
-  function openSheet(el,focus){if(!el||!el.hidden)return;sheetFocus.set(el,document.activeElement);el.hidden=false;lock(1);$('#main').inert=true;$('.header').inert=true;$('.footer').inert=true;if(focus)focus.focus()}
-  function closeSheet(el){if(!el||el.hidden)return;el.hidden=true;lock(-1);if(!locks){$('#main').inert=false;$('.header').inert=false;$('.footer').inert=false}var previous=sheetFocus.get(el);if(previous&&document.contains(previous))previous.focus()}
+  function openSheet(el,focus){if(!el||!el.hidden)return;sheetFocus.set(el,document.activeElement);el.hidden=false;lock(1);$('#main').inert=true;$('.header').inert=true;$('.footer').inert=true;$('#buybar').inert=true;if(focus)focus.focus()}
+  function closeSheet(el){if(!el||el.hidden)return;el.hidden=true;lock(-1);if(!locks){$('#main').inert=false;$('.header').inert=false;$('.footer').inert=false;$('#buybar').inert=false}var previous=sheetFocus.get(el);if(previous&&document.contains(previous))previous.focus()}
   function setNav(v){if(v)openSheet(mobile,$('#nav-close'));else closeSheet(mobile);var b=$('#nav-open');if(b)b.setAttribute('aria-expanded',v?'true':'false')}
   on($('#nav-open'),'click',function(){setNav(true)});on($('#nav-close'),'click',function(){setNav(false)});
   $$('a',mobile).forEach(function(a){on(a,'click',function(){setNav(false)})});
   on(window,'resize',function(){if(innerWidth>=900&&mobile&&!mobile.hidden)setNav(false)});
 
-  var thumbs=$$('.thumb');
-  function showView(v){$$('.gallery__stage .plate').forEach(function(p){p.dataset.active=p.classList.contains('plate--'+v)?'true':'false'});thumbs.forEach(function(t){t.setAttribute('aria-pressed',t.dataset.view===v?'true':'false')})}
+  var thumbs=$$('.thumb'),viewIndex=0,views=['set','front','back'];
+  function showView(v){viewIndex=views.indexOf(v);if(viewIndex<0)viewIndex=0;$$('.gallery__stage .plate').forEach(function(p){p.dataset.active=p.classList.contains('plate--'+v)?'true':'false'});thumbs.forEach(function(t){t.setAttribute('aria-pressed',String(t.dataset.view===v))});var counter=$('#gallery-count');if(counter)counter.textContent='0'+(viewIndex+1)+' / 03'}
   thumbs.forEach(function(t){on(t,'click',function(){showView(t.dataset.view)})});
+  on($('#gallery-prev'),'click',function(){showView(views[(viewIndex+2)%3])});on($('#gallery-next'),'click',function(){showView(views[(viewIndex+1)%3])});
+  var swipeStart=null;
+  on($('#gallery-stage'),'touchstart',function(e){swipeStart=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
+  on($('#gallery-stage'),'touchend',function(e){if(!swipeStart||e.changedTouches.length!==1)return;var dx=e.changedTouches[0].clientX-swipeStart.x,dy=e.changedTouches[0].clientY-swipeStart.y;swipeStart=null;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)showView(views[(viewIndex+(dx<0?1:2))%3])},{passive:true});
   function setPlate(view,src,color){$$('.plate--'+view).forEach(function(p){var inner=$('.plate__inner',p);if(!inner)return;var img=new Image();img.src=src;img.alt=color+' Son of Kings '+(view==='front'?'hoodie':'trousers');img.className='plate__photo';img.decoding='async';img.loading='eager';inner.replaceChildren(img);inner.style.padding='0';inner.style.background='none'})}
 
   var cards=$$('.edition-card');
@@ -63,7 +67,7 @@
   function setColor(c){
     if(!SITE.colors[c])return;
     var colorCurrent=$('#color-current');if(colorCurrent)colorCurrent.textContent=c;
-    $$('[data-color-choice]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.colorChoice===c))});chosenColor=c;var ph=SITE.colors[c],available=ph.available;setPlate('front',ph.front,c);setPlate('back',ph.back,c);showView('front');
+    $$('[data-color-choice]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.colorChoice===c))});chosenColor=c;var ph=SITE.colors[c],available=ph.available;setPlate('front',ph.front,c);setPlate('back',ph.back,c);$$('.plate--set .set-hoodie').forEach(function(img){img.src=ph.front;img.alt=c+' Son of Kings hoodie'});$$('.plate--set .set-trousers').forEach(function(img){img.src=ph.back;img.alt=c+' Son of Kings trousers'});showView('set');
     var eyebrow=$('.detail__head .eyebrow');if(eyebrow)eyebrow.textContent='SON OF KINGS · '+c.toUpperCase();
     var title=$('#product-title');if(title)title.innerHTML='Tracksuit<br><em>in '+c+'</em>';
     var lede=$('.detail > .lede');if(lede)lede.textContent=c+' hoodie and trousers made from 70% recycled polyester and 30% organic cotton, with gold hardware and the Son of Kings crest.';
@@ -71,18 +75,22 @@
     var add=$('#add-to-bag');if(add){add.textContent=available?'Add '+c+' set — '+money(SITE.price):c+' — Out of stock';add.disabled=!available}
     var buybarAdd=$('#buybar-add');if(buybarAdd){buybarAdd.disabled=!available;buybarAdd.textContent=available?'Add to bag':'Out of stock'}
     cards.forEach(function(card){var active=card.dataset.color===c;card.setAttribute('aria-pressed',active?'true':'false');card.dataset.selected=active?'true':'false'});
-    var bar=$('#buybar-size');if(bar)bar.textContent=c+' · '+(available?(chosenSize?'Size '+chosenSize:'Choose a size'):'Out of stock');
+    syncPurchase();
   }
 
   var sizeBtns=$$('.size');
-  function setSize(s){chosenSize=s;var feedback=$('#size-feedback');if(feedback){feedback.classList.remove('size-feedback--error');feedback.textContent=s?'Size '+s+' selected.':'Choose your size. Need help? Open the size guide above.'}sizeBtns.forEach(function(b){var a=b.dataset.size===s;b.setAttribute('aria-checked',a?'true':'false');b.tabIndex=a||(!s&&b.dataset.size==='S')?0:-1});var x=$('#size-current');if(x)x.textContent=s||'Select your size';var bar=$('#buybar-size');if(bar)bar.textContent=chosenColor+' · '+(SITE.colors[chosenColor].available?(s?'Size '+s:'Choose a size'):'Out of stock')}
+  function setSize(s){chosenSize=s;var feedback=$('#size-feedback');if(feedback){feedback.classList.remove('size-feedback--error');feedback.textContent=s?'Size '+s+' selected.':'Choose your size. Need help? Open the size guide above.'}sizeBtns.forEach(function(b){var a=b.dataset.size===s;b.setAttribute('aria-checked',a?'true':'false');b.tabIndex=a||(!s&&b.dataset.size==='S')?0:-1});var x=$('#size-current');if(x)x.textContent=s||'Select your size';syncPurchase()}
   sizeBtns.forEach(function(b,i){on(b,'click',function(){setSize(b.dataset.size)});on(b,'keydown',function(e){var d=/Right|Down/.test(e.key)?1:/Left|Up/.test(e.key)?-1:0;if(!d)return;e.preventDefault();var n=sizeBtns[(i+d+sizeBtns.length)%sizeBtns.length];setSize(n.dataset.size);n.focus()})});
-  function setQty(n){qty=Math.max(1,Math.min(SITE.max,n));var o=$('#qty-value');if(o)o.textContent=qty;var d=$('#qty-dec'),i=$('#qty-inc');if(d)d.disabled=qty<=1;if(i)i.disabled=qty>=SITE.max}
+  function syncPurchase(){var available=SITE.colors[chosenColor].available,label=qty===1?'Add set':'Add '+qty+' sets',amount=money(qty*SITE.price);var add=$('#add-to-bag');if(add){add.disabled=!available;add.textContent=available?label+' — '+amount:chosenColor+' — Out of stock'}var sticky=$('#buybar-add');if(sticky){sticky.disabled=!available;sticky.textContent=available?(chosenSize?label+' — '+amount:'Choose size'):'Out of stock'}var price=$('#buybar-total');if(price)price.textContent=amount;var meta=$('#buybar-size');if(meta)meta.textContent=chosenColor+' / '+(available?(chosenSize?'Size '+chosenSize:'Choose a size'):'Out of stock')+(qty>1?' / '+qty+' sets':'');var stickyImage=$('.buybar__product img');if(stickyImage)stickyImage.src=SITE.colors[chosenColor].front;var select=$('#buybar-select');if(select){select.value=chosenSize||'';select.disabled=!available}var note=$('#purchase-note');if(note)note.textContent=amount+' USD for '+(qty===1?'one complete set':qty+' complete sets')+'. Shipping and tax reviewed at checkout.'}
+  on($('#buybar-select'),'change',function(e){setSize(SITE.sizes.indexOf(e.target.value)>-1?e.target.value:null)});
+  function setQty(n){qty=Math.max(1,Math.min(SITE.max,n));var o=$('#qty-value');if(o)o.textContent=qty;var d=$('#qty-dec'),i=$('#qty-inc');if(d)d.disabled=qty<=1;if(i)i.disabled=qty>=SITE.max;syncPurchase()}
   on($('#qty-dec'),'click',function(){setQty(qty-1)});on($('#qty-inc'),'click',function(){setQty(qty+1)});
 
   var guide=$('#size-guide'),toggle=$('#guide-toggle');function setGuide(v){if(!guide||!toggle)return;guide.hidden=!v;toggle.setAttribute('aria-expanded',v?'true':'false');toggle.textContent=v?'Hide size guide':'Size guide'}
   on(toggle,'click',function(){setGuide(guide.hidden)});$$('[data-open-guide]').forEach(function(a){on(a,'click',function(){setGuide(true)})});
 
+  var measurementCells=$$('.guide__table tbody td'),inchValues=measurementCells.map(function(td){return td.textContent});
+  $$('[data-unit]').forEach(function(button){on(button,'click',function(){var cm=button.dataset.unit==='cm';measurementCells.forEach(function(td,i){var value=inchValues[i];if(cm){if(i%4===3)value='170.2–182.9';else value=value.split('–').map(function(n){return (Number(n)*2.54).toFixed(1)}).join('–')}td.textContent=value});$('#guide-unit-label').textContent='Body measurements / '+(cm?'centimetres':'inches');$$('[data-unit]').forEach(function(b){b.setAttribute('aria-pressed',String(b===button))})})});
   var bagBody=$('#bag-body');
   function renderBag(){
     var n=count(),ce=$('#bag-count');if(ce){ce.textContent=n;ce.dataset.empty=n?'false':'true'}var ct=$('#bag-count-text');if(ct)ct.textContent='Bag, '+n+(n===1?' item':' items');var te=$('#bag-total');if(te)te.textContent=money(total());var checkout=$('#checkout');if(checkout)checkout.disabled=!n;var so=$('#checkout-sms');if(so){so.href=n?'sms:'+SITE.phone+'?&body='+encodeURIComponent(orderText()):'#';so.setAttribute('aria-disabled',n?'false':'true');so.tabIndex=n?0:-1}
@@ -106,12 +114,12 @@
   var buybar=$('#buybar'),product=$('#product');
   if(buybar&&product&&'IntersectionObserver'in window){
     var heroPassed=false,productVisible=false;
-    function syncBar(){var visible=heroPassed&&!productVisible;buybar.dataset.shown=String(visible);buybar.setAttribute('aria-hidden',String(!visible));$('#buybar-add').tabIndex=visible?0:-1}
+    function syncBar(){var visible=heroPassed&&!productVisible;buybar.dataset.shown=String(visible);buybar.setAttribute('aria-hidden',String(!visible));$('#buybar-add').tabIndex=visible?0:-1;$('#buybar-select').tabIndex=visible?0:-1}
     new IntersectionObserver(function(es){heroPassed=es[0].boundingClientRect.bottom<0;syncBar()}).observe($('.hero'));
     new IntersectionObserver(function(es){productVisible=es[0].isIntersecting;syncBar()}).observe($('.buy'));
   }
   var zoom=$('#image-zoom');
-  on($('#zoom-open'),'click',function(){var source=$('.gallery__stage .plate[data-active="true"] .plate__photo');if(!source||!zoom)return;$('#zoom-image').src=source.src;$('#zoom-image').alt=source.alt;$('#zoom-title').textContent=source.alt;zoom.showModal();lock(1)});
+  on($('#zoom-open'),'click',function(){var active=$('.gallery__stage .plate[data-active="true"]'),source=$('.plate__photo',active);if(!source||!zoom)return;$('#zoom-image').src=source.src;$('#zoom-image').alt=source.alt;var second=$('.set-trousers',active),other=$('#zoom-trousers');other.hidden=!second;$('#zoom-photos').dataset.set=String(!!second);if(second){other.src=second.src;other.alt=second.alt}$('#zoom-title').textContent=second?chosenColor+' / Complete set':source.alt;zoom.showModal();lock(1)});
   on($('#zoom-close'),'click',function(){zoom.close()});
   on(zoom,'click',function(e){if(e.target===zoom){var r=zoom.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)zoom.close()}});
   on(zoom,'close',function(){lock(-1);$('#zoom-open').focus()});
