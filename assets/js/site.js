@@ -28,14 +28,14 @@
   function productName(c){return 'Son of Kings Crest Tracksuit in '+c}
 
   var joinBody='Please add me to Son of Kings product and release updates.';
-  var sms=$('#club-sms'); if(sms){sms.href='sms:'+SITE.phone+'?&body='+encodeURIComponent(joinBody);sms.textContent='Get release updates'}
-  var note=$('#club-note');if(note)note.textContent='Text to join the updates list.';
-  var foot=$('#footer-email');if(foot){foot.href='mailto:'+SITE.email;foot.textContent='Contact'}
+  var sms=$('#club-sms'); if(sms){sms.href='mailto:'+SITE.email+'?subject='+encodeURIComponent('Son of Kings release updates')+'&body='+encodeURIComponent(joinBody);sms.textContent='Request release updates'}
+  var note=$('#club-note');if(note)note.textContent='Opens an email request. You choose when to send it.';
+  var foot=$('#footer-email');if(foot){foot.href='mailto:'+SITE.email;foot.textContent='Email Son of Kings'}
 
-  var lastFocused=null, locks=0, mobile=$('#mobile-nav'), bagEl=$('#bag');
+  var sheetFocus=new WeakMap(), locks=0, mobile=$('#mobile-nav'), bagEl=$('#bag');
   function lock(n){locks=Math.max(0,locks+n);document.body.dataset.locked=locks?'true':'false'}
-  function openSheet(el,focus){if(!el||!el.hidden)return;lastFocused=document.activeElement;el.hidden=false;lock(1);if(focus)focus.focus()}
-  function closeSheet(el){if(!el||el.hidden)return;el.hidden=true;lock(-1);if(lastFocused&&document.contains(lastFocused))lastFocused.focus()}
+  function openSheet(el,focus){if(!el||!el.hidden)return;sheetFocus.set(el,document.activeElement);el.hidden=false;lock(1);$('#main').inert=true;$('.header').inert=true;$('.footer').inert=true;if(focus)focus.focus()}
+  function closeSheet(el){if(!el||el.hidden)return;el.hidden=true;lock(-1);if(!locks){$('#main').inert=false;$('.header').inert=false;$('.footer').inert=false}var previous=sheetFocus.get(el);if(previous&&document.contains(previous))previous.focus()}
   function setNav(v){if(v)openSheet(mobile,$('#nav-close'));else closeSheet(mobile);var b=$('#nav-open');if(b)b.setAttribute('aria-expanded',v?'true':'false')}
   on($('#nav-open'),'click',function(){setNav(true)});on($('#nav-close'),'click',function(){setNav(false)});
   $$('a',mobile).forEach(function(a){on(a,'click',function(){setNav(false)})});
@@ -47,6 +47,7 @@
   function setPlate(view,src,color){$$('.plate--'+view).forEach(function(p){var inner=$('.plate__inner',p);if(!inner)return;var img=new Image();img.src=src;img.alt=color+' Son of Kings '+(view==='front'?'hoodie':'trousers');img.className='plate__photo';img.decoding='async';img.loading='eager';inner.replaceChildren(img);inner.style.padding='0';inner.style.background='none'})}
 
   var cards=$$('.edition-card');
+  $$('[data-color-choice]').forEach(function(b){on(b,'click',function(){setColor(b.dataset.colorChoice)})});
   cards.forEach(function(card){
     var h=$('h3',card);if(!h||!SITE.colors[h.textContent.trim()])return;
     var c=h.textContent.trim(), available=SITE.colors[c].available;card.dataset.color=c;card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',(available?'Select ':'View ')+c+' tracksuit'+(available?'':' — out of stock'));
@@ -59,7 +60,9 @@
   });
 
   function setColor(c){
-    if(!SITE.colors[c])return;chosenColor=c;var ph=SITE.colors[c],available=ph.available;setPlate('front',ph.front,c);setPlate('back',ph.back,c);showView('front');
+    if(!SITE.colors[c])return;
+    var colorCurrent=$('#color-current');if(colorCurrent)colorCurrent.textContent=c;
+    $$('[data-color-choice]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.colorChoice===c))});chosenColor=c;var ph=SITE.colors[c],available=ph.available;setPlate('front',ph.front,c);setPlate('back',ph.back,c);showView('front');
     var eyebrow=$('.detail__head .eyebrow');if(eyebrow)eyebrow.textContent='SON OF KINGS · '+c.toUpperCase();
     var title=$('#product-title');if(title)title.innerHTML='Tracksuit<br><em>in '+c+'</em>';
     var lede=$('.detail > .lede');if(lede)lede.textContent=c+' hoodie and trousers made from 70% recycled polyester and 30% organic cotton, with gold hardware and the Son of Kings crest.';
@@ -95,8 +98,8 @@
   function orderText(){var lines=Object.keys(bag).map(function(k){var p=k.split('|'),n=bag[k];return '  '+productName(p[0])+' — size '+p[1]+' × '+n+' — '+money(SITE.price*n)});return ['Hello, I would like to request this Son of Kings order:','',lines.join('\n'),'', 'Product subtotal: '+money(total()),'', 'Shipping name:','Address:','Phone:'].join('\n')}
   on($('#checkout'),'click',function(){if(!count())return;location.href='/checkout/';});
 
-  var eh=$('.editions__head .lede');if(eh)eh.textContent='Black is available now. Explore every Son of Kings colorway below; Navy, Royal Blue, Forest Green, Marble and Crimson are currently out of stock.';
-  var et=$('#editions-title');if(et)et.innerHTML='Explore every <em>color.</em>';
+  var eh=$('.editions__head .lede');if(eh)eh.textContent='Explore the Son of Kings palette. Black is available now; the remaining colorways are currently out of stock.';
+  var et=$('#editions-title');if(et)et.innerHTML='A color for <em>every mood.</em>';
   $$('.faq__list details').forEach(function(d){var s=$('summary',d);if(s&&/Black the only edition|Which colors are available/i.test(s.textContent)){s.textContent='Which colors are available?';var p=$('p',d);if(p)p.textContent='Black is currently available to order. Navy, Royal Blue, Forest Green, Marble and Crimson are shown as colorways but are currently out of stock.'}if(s&&/What is included/i.test(s.textContent)){var p2=$('p',d);if(p2)p2.textContent='One hoodie and one matching pair of trousers in your selected available color. They are sold together as a set.'}});
 
   var buybar=$('#buybar'),product=$('#product');
@@ -113,6 +116,7 @@
   on(zoom,'close',function(){lock(-1);$('#zoom-open').focus()});
   if('IntersectionObserver'in window){var sectionObserver=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){$$('.nav a').forEach(function(a){if(a.hash==='#'+e.target.id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current')})}})},{rootMargin:'-20% 0px -55% 0px'});['product','editions','atelier','club'].forEach(function(id){var el=$('#'+id);if(el)sectionObserver.observe(el)})}
 
+  on(window,'storage',function(e){if(e.key===KEY){bag=load();renderBag()}});
   on(document,'keydown',function(e){if(e.key!=='Tab')return;var sheet=bagEl&&!bagEl.hidden?bagEl:mobile&&!mobile.hidden?mobile:null;if(!sheet)return;var f=$$('a[href],button:not([disabled]),[tabindex="0"]',sheet).filter(function(el){return el.offsetParent!==null});if(!f.length)return;if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus()}});
   var year=$('#year');if(year)year.textContent=new Date().getFullYear();setColor('Black');setSize(null);setQty(1);save();renderBag();
 })();
