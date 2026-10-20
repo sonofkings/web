@@ -15,7 +15,7 @@ export default {
   }
   const headers=new Headers({'Content-Type':'application/json','Cache-Control':'no-store'});let status=200,result;
   const response={setHeader(k,v){headers.set(k,v)},status(n){status=n;return this},json(data){result=JSON.stringify(data);return this}};
-  await handler({method:request.method,body},response);
+  try{await handler({method:request.method,body,env},response)}catch{return Response.json({error:'Checkout is temporarily unavailable. Please retry shortly.'},{status:500,headers:{'Cache-Control':'no-store'}})}
   return new Response(result,{status,headers});
  }
 };

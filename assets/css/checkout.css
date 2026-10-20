@@ -6,3 +6,19 @@
 /* Match the Black & Gold storefront and support editable sizes. */
 body{background:#f8f6f0}.checkout-header{background:#171c16;color:#f5f1e6;max-width:none;padding-inline:max(24px,calc((100vw - 1180px)/2));border-bottom-color:#333a2f}.wordmark img{filter:none}.summary{background:#ecebdf;border-color:#d6d8c8}.pay-link{background:#c8b183;color:#191d16;border-color:#c8b183}.pay-link:hover{background:#d8c398;border-color:#d8c398}.checkout-art{background:#e9e9df}.item-size-label{display:flex;align-items:center;gap:12px;margin-top:12px;font-size:11px;color:var(--body)}.item-size{min-width:82px;min-height:40px;padding:7px 10px;background:#f8f6f0;border:1px solid #cdd0c5;border-radius:3px;font:12px Jost,Arial,sans-serif;color:var(--ink)}.checkout-message{padding:12px;font-size:12px;background:#ede7d8;color:#754a2a;border-left:2px solid #987944}.item-controls{margin-top:10px}
 @media(max-width:800px){.checkout-header{padding-inline:20px}.item-size{min-height:44px}}
+
+/* Embedded checkout: readable fields and a summary that scrolls naturally. */
+.summary{position:static}
+.shipping-label{display:block;margin:14px 0;font-size:13px;font-weight:500;color:var(--ink)}
+.shipping-label input{display:block;width:100%;min-height:48px;box-sizing:border-box;margin-top:6px;padding:12px 14px;border:1px solid #bec3b2;border-radius:3px;background:#fff;color:var(--ink);font:16px Jost,Arial,sans-serif}
+.shipping-label input:focus{outline:2px solid var(--gold);outline-offset:2px}
+.shipping-label input:disabled{background:#f1f1ea;color:#61655b}
+.card-field{min-width:0;height:56px;margin:12px 0;border:1px solid #bec3b2;border-radius:3px;background:#fff}
+#paypal-buttons{margin-top:12px;min-height:45px}
+#payment-actions .pay-link{width:100%}
+#payment-actions section{border-top:1px solid var(--rule);margin-top:25px;padding-top:22px}
+#payment-actions h3{font-size:19px;font-weight:500;margin:20px 0 12px}
+#payment-actions [role=status]{font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+#payment-actions section[hidden]{display:none}
+#payment-actions .pay-link:disabled{opacity:.6;cursor:wait}
+@media(max-width:400px){.summary{padding:20px}.checkout-layout{padding-inline:16px}.wordmark{font-size:16px}}
