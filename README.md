@@ -1,122 +1,67 @@
 # Son of Kings
 
-Storefront for the Bullion Crest Tracksuit — a static site with no build step,
-no build step for the frontend, and server-side Stripe / PayPal checkout.
+Custom storefront for the $99 Crest Tracksuit, with $10 flat shipping per order.
+Frontend: static HTML/CSS/JavaScript. Backend: Cloudflare Worker and PayPal Orders API.
+No Shopify services are used.
 
-## Run it
+## Development and deployment
 
-Open `index.html`, or serve the folder:
+Use Wrangler to run the Worker and assets together. A plain static server cannot run payment APIs.
+Cloudflare's existing Git integration builds branch previews and production from the configured branch.
+The Wrangler build command runs `node tests/paypal.test.cjs` before deployment.
+The test uses mocked PayPal responses and native Node crypto; it does not move money.
 
-```sh
-python3 -m http.server 8000
-```
+- `index.html`, `assets/js/site.js`: storefront, product options, bag.
+- `checkout/index.html`, `assets/js/checkout.js`, `assets/css/checkout.css`: on-site checkout.
+- `api/paypal.js`: server pricing, U.S. address validation, create and capture.
+- `worker.mjs`: API routing and static assets.
+- `tests/paypal.test.cjs`: regression tests and frontend syntax checks.
 
-Then visit <http://localhost:8000>.
+## Payment configuration
 
-## Deploy
+Store credentials only in Cloudflare Worker settings. Never commit them or paste secrets into chat.
 
-Any static host works — GitHub Pages, Netlify, Vercel, S3, plain nginx.
-Push this repository and point the host at the root; `.nojekyll` keeps
-GitHub Pages from reprocessing `assets/`.
+- `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`: matching REST app credentials.
+- `PAYPAL_ENV=sandbox`: testing. Omit for live mode with live credentials.
+- `PAYPAL_EMBEDDED_ENABLED=true`: enable order creation after account approval and testing.
+- `CHECKOUT_TAX_BPS`: explicitly confirmed fixed tax rate in basis points, including explicit zero where appropriate.
 
-Before going live, replace `https://sonofkings.com/` in `index.html`
-(`<link rel="canonical">`), `robots.txt`, and `sitemap.xml` with the real domain.
+Shipping is fixed in server code at **1000 cents per order**, independent of quantity or size count.
+The server computes $99 per set plus $10 shipping plus configured tax and rejects a checkout
+if its displayed total no longer matches server pricing. There is no shipping override in the browser.
+Tax is currently a fixed configured rate applied to subtotal plus shipping. This is not a destination-based
+tax engine. Confirm the actual business tax requirements before enabling; add destination-based
+calculation if required. Supported delivery addresses are the 50 U.S. states and DC.
 
-## Layout
+## Customer experience
 
-```
-index.html              the store
-404.html                not-found page
-site.webmanifest        installable-app metadata
-robots.txt sitemap.xml  crawl hints
-assets/css/site.css     stylesheet (mobile-first: 700 / 900 / 1000 breakpoints)
-assets/js/site.js       bag, size picker, gallery, drawers
-assets/fonts/           Cinzel + Jost, self-hosted woff2
-assets/img/             crest, favicons, Open Graph card
-```
+Card fields are embedded in the checkout and securely hosted by PayPal. Son of Kings never receives raw
+card numbers. PayPal wallet payment may open a popup; card authentication may require a bank challenge.
+Account eligibility determines whether embedded card fields are available.
 
-## Editing
+All selected sizes and quantities enter one order with shipping details. Customers see the final total
+before payment. Shipping form values survive bag edits in page memory. Completed orders show a receipt
+reference that survives refresh in the same tab. The bag clears only after confirmed payment, and only
+if it still matches the paid order. Pending captures can be retried using the same order ID.
 
-Everything you would normally change lives in the `SITE` block at the top of
-`assets/js/site.js`:
+Capture checks merchant signatures, USD totals, U.S. shipping, approval status and completed capture.
+Completed orders are rechecked without another capture. Capture recovery remains available when new
+order creation is disabled, provided credentials remain configured. The checkout fails closed if required
+settings are missing. The former hosted payment-link fallback is removed because its shipping settings
+cannot be guaranteed to match the $10 policy.
 
-- `email` / `phone` / `phoneLabel` — where "join the list" and checkout go.
-- `product` — name, price, sizes, per-size cap. Price also appears as text in
-  `index.html` (hero button, detail block, buy bar) and in the JSON-LD.
-- `photos` — supply real product shots and they replace the composed plates:
+PayPal merchant transaction records are the fulfillment record. No separate order database, automatic
+merchant notification system, stock reservation or destination-based tax calculation is included.
+The legacy Stripe endpoint remains dormant and is not offered by this checkout.
 
-  ```js
-  photos: {
-    front:   'assets/img/front.jpg',
-    back:    'assets/img/back.jpg',
-    detail:  'assets/img/detail.jpg',
-    edition: 'assets/img/edition.jpg'
-  }
-  ```
+## Validation and launch
 
-  Shoot them 4:5; the thumbnails crop square from the same files.
+Regression coverage: explicit configuration, invalid/duplicate carts, quantity limits, payment methods,
+U.S. states, changed totals, $10 shipping once per multi-size order, configured tax, card/PayPal payloads,
+capture idempotency, disabled-create recovery, pending/unapproved/tampered payments, completed orders,
+and frontend syntax.
 
-## Checkout
-
-See the configuration below for server-side Stripe and PayPal payments.
-
-## Notes
-
-- Bag contents persist in `localStorage` under `sok.bag.v1`, and the loader
-  discards anything that is not a size the shop actually sells.
-- The crest is the only raster asset: a 960px palette PNG at 113 KB.
-- Honours `prefers-reduced-motion`; drawers trap focus and close on Escape.
-
-## October 2026 checkout update
-Tracksuits are USD 99.00 per set. `/api/checkout` creates Stripe prices on the server
-at 9900 cents and includes the selected size in each line item.
-
-Cloudflare Workers runs `worker.mjs`, which routes `/api/checkout` and `/api/paypal`
-to the payment handlers. `wrangler.jsonc` configures static assets and Node compatibility. Keep `STRIPE_SECRET_KEY` configured for card checkout.
-For PayPal, configure **server environment variables** `PAYPAL_CLIENT_ID` and
-`PAYPAL_CLIENT_SECRET` from the merchant's PayPal REST app. `PAYPAL_ENV=sandbox`
-selects sandbox; omit it for live payments. Never commit secrets. Redeploy after
-configuration. GET `/api/paypal` exposes only the public client ID and availability.
-The browser creates and captures orders through the server; prices and valid sizes
-are enforced server-side, and capture verifies an HMAC-signed purchase unit, USD
-amount, U.S. shipping address, and completed capture status. PayPal transaction
-records include size, quantity, and shipping details for merchant fulfillment.
-If PayPal is not configured, checkout clearly says so and keeps card checkout usable.
-Test sandbox approval, cancellation, errors and duplicate capture before enabling live.
-
-## Active hosted PayPal checkout
-The storefront uses verified reusable PayPal link `PLB-2FCAQUF5Q4CB` at USD 99,
-with size variants S–XXL, quantities 1–9 and shipping address collection.
-`assets/js/checkout.js` links to PayPal; shoppers must reselect size and quantity.
-Multiple sizes require separate hosted checkouts. The return page does not infer
-payment success or clear the bag. PayPal receipts and merchant transactions are
-the payment source of truth. The optional API integration remains dormant.
-
-## Embedded checkout (staged; do not enable before sandbox verification)
-
-This branch adds PayPal CardFields on /checkout/, with a single order containing all selected sizes.
-Card details go directly to PayPal-hosted fields. PayPal wallet approval can still open a popup.
-The existing hosted payment link remains a fallback when embedded checkout is disabled.
-
-Required Cloudflare Worker settings (never put secrets in GitHub):
-- PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET: matching merchant REST app credentials.
-- PAYPAL_ENV=sandbox for testing; live credentials and live environment for launch.
-- PAYPAL_EMBEDDED_ENABLED=true: explicit activation after testing and merchant approval.
-- CHECKOUT_US_SHIPPING_CENTS: confirmed flat shipping amount per order, in cents.
-- CHECKOUT_TAX_BPS: confirmed fixed tax rate in basis points, applied to subtotal plus shipping.
-Both numeric settings must be explicit, including zero where appropriate; missing settings disable checkout.
-The fixed tax rule is a limited implementation, not an automatic jurisdiction-based tax engine.
-Verify the business's actual tax requirements and replace this rule if rates vary by destination before activation.
-Shipping is U.S. only; flat-rate service coverage must match accepted destinations.
-PayPal button/link shipping preferences do not automatically transfer to API orders.
-
-The server validates cart, price, address and signed order totals before capture. Capture uses a stable
-idempotency key and can recheck an already-completed order. The browser preserves a pending order
-for confirmation retries and clears the unchanged bag only after server-confirmed completion.
-Fulfillment uses PayPal transaction records; this does not add a separate order database or merchant emails.
-
-Validation performed: JavaScript syntax checks and mocked API checks for configuration, invalid cart,
-card order payload, shipping totals, and missing-setting guard.
-Still required before merge/activation: Cloudflare build/runtime check; desktop/mobile browser QA;
-PayPal sandbox approval, card decline, 3DS, cancellation, reload/retry and duplicate capture tests;
-merchant Advanced Card Payments eligibility; confirmed shipping/tax settings; live deployment verification.
+Still required for production activation: verify the deployed settings and live merchant account eligibility;
+test sandbox card success, decline, 3DS, PayPal wallet, cancel, refresh and interrupted capture;
+verify desktop/mobile browser rendering and real endpoint behavior; confirm the tax policy.
+A passing build is not proof that live payments are enabled or end-to-end tested.
