@@ -91,3 +91,32 @@ with size variants S–XXL, quantities 1–9 and shipping address collection.
 Multiple sizes require separate hosted checkouts. The return page does not infer
 payment success or clear the bag. PayPal receipts and merchant transactions are
 the payment source of truth. The optional API integration remains dormant.
+
+## Embedded checkout (staged; do not enable before sandbox verification)
+
+This branch adds PayPal CardFields on /checkout/, with a single order containing all selected sizes.
+Card details go directly to PayPal-hosted fields. PayPal wallet approval can still open a popup.
+The existing hosted payment link remains a fallback when embedded checkout is disabled.
+
+Required Cloudflare Worker settings (never put secrets in GitHub):
+- PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET: matching merchant REST app credentials.
+- PAYPAL_ENV=sandbox for testing; live credentials and live environment for launch.
+- PAYPAL_EMBEDDED_ENABLED=true: explicit activation after testing and merchant approval.
+- CHECKOUT_US_SHIPPING_CENTS: confirmed flat shipping amount per order, in cents.
+- CHECKOUT_TAX_BPS: confirmed fixed tax rate in basis points, applied to subtotal plus shipping.
+Both numeric settings must be explicit, including zero where appropriate; missing settings disable checkout.
+The fixed tax rule is a limited implementation, not an automatic jurisdiction-based tax engine.
+Verify the business's actual tax requirements and replace this rule if rates vary by destination before activation.
+Shipping is U.S. only; flat-rate service coverage must match accepted destinations.
+PayPal button/link shipping preferences do not automatically transfer to API orders.
+
+The server validates cart, price, address and signed order totals before capture. Capture uses a stable
+idempotency key and can recheck an already-completed order. The browser preserves a pending order
+for confirmation retries and clears the unchanged bag only after server-confirmed completion.
+Fulfillment uses PayPal transaction records; this does not add a separate order database or merchant emails.
+
+Validation performed: JavaScript syntax checks and mocked API checks for configuration, invalid cart,
+card order payload, shipping totals, and missing-setting guard.
+Still required before merge/activation: Cloudflare build/runtime check; desktop/mobile browser QA;
+PayPal sandbox approval, card decline, 3DS, cancellation, reload/retry and duplicate capture tests;
+merchant Advanced Card Payments eligibility; confirmed shipping/tax settings; live deployment verification.
