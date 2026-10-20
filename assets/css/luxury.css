@@ -1,0 +1,147 @@
+/* Son of Kings: luxury streetwear art direction. */
+:root{--paper:#f2efe8;--ink:#141412;--body:#625f58;--muted:#777269;--rule:#d7d2c7;--gold:#a78a53;--gold-lit:#d6bf8b;--shell:1440px}
+html,body{background:var(--paper)}
+.announce{background:#d1b780;color:#171610;min-height:30px;letter-spacing:.13em;font-size:9px;gap:28px}
+.announce span[aria-hidden]{color:#5b4a2b}
+.header{background:rgba(17,17,16,.98);color:#f3f0e8;border-bottom:1px solid #333129;backdrop-filter:blur(12px)}
+.header__bar{min-height:84px;max-width:1560px}
+.header .brand__name{font-size:23px;font-weight:600;letter-spacing:.025em}
+.header .brand img{filter:none;width:40px;height:42px}
+.nav a{font-size:11px;text-transform:uppercase;letter-spacing:.13em}
+.header .bag-btn{font-size:12px;letter-spacing:.06em}
+.header .bag-btn__count{background:#d1b780;color:#141412}
+.header .bag-btn__count[data-empty=true]{background:#34322c;color:#d8d2c5}
+.header .burger span:not(.vh){background:#f2efe8;box-shadow:0 5px #f2efe8,0 -5px #f2efe8}
+.campaign{background:#111110;color:#f3f0e8;overflow:hidden}
+.campaign__inner{max-width:1560px;padding:48px var(--gut) 0;margin:auto;display:grid;grid-template-columns:1fr 1fr;column-gap:48px}
+.campaign__copy{padding:24px 0 30px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.campaign__eyebrow{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.18em;color:#c5b58f;margin-bottom:35px}
+.campaign__line{display:block;width:28px;height:1px;background:#b99c60}
+.campaign h1{font-family:Jost,Arial,sans-serif;font-size:clamp(64px,7.3vw,112px);font-weight:600;letter-spacing:-.065em;line-height:.9;margin:0;text-wrap:nowrap}
+.campaign h1>span{color:#d0b77f}
+.campaign__intro{margin-top:26px;font-size:15px;line-height:1.7;color:#bcb9af;max-width:34ch}
+.campaign__cta{margin-top:32px;min-height:54px;padding:17px 25px;display:flex;align-items:center;gap:55px;background:#d1b780;color:#161510;font-size:11px;font-weight:600;letter-spacing:.12em;transition:background .2s}
+.campaign__cta:hover{background:#e4cf9f}
+.campaign__cta>span{font-size:20px;line-height:1}
+.campaign__spec{display:flex;align-items:baseline;justify-content:space-between;gap:30px;max-width:320px;width:100%;margin-top:26px;border-top:1px solid #3b382e;padding-top:17px}
+.campaign__spec>span{font-size:9px;letter-spacing:.13em;color:#a7a397}
+.campaign__spec strong{font-size:26px;font-weight:500;letter-spacing:-.03em}
+.campaign__spec small{font-size:9px;color:#a7a397;letter-spacing:.1em;margin-left:4px;font-weight:400}
+.campaign__art{position:relative;display:flex;flex-direction:column;background:#e9e4d8;color:#171713;min-width:0;min-height:500px;overflow:hidden}
+.campaign__art-label{display:flex;justify-content:space-between;gap:20px;padding:24px 26px;font-size:9px;letter-spacing:.15em;color:#666155;z-index:1}
+.campaign__art-label b{font-weight:500}
+.campaign__pieces{position:relative;flex:1;min-height:400px}
+.campaign__pieces img{position:absolute;object-fit:contain;transition:transform .6s cubic-bezier(.2,.7,.3,1);filter:drop-shadow(0 16px 12px #17140f15)}
+.campaign__hoodie{width:70%;height:104%;left:-6%;top:-1%}
+.campaign__trousers{width:46%;height:100%;right:0;top:-1%}
+.campaign__art:hover img{transform:translateY(-5px)}
+.campaign__art-caption{display:flex;justify-content:space-between;align-items:center;margin:14px 26px 0;padding:18px 0;border-top:1px solid #c9c2b3;font-size:9px;letter-spacing:.15em}
+.campaign__art-caption>span{font-size:22px}
+.campaign__footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:24px;border-top:1px solid #333128;margin-top:38px;min-height:64px;font-size:9px;letter-spacing:.13em;color:#99968c}
+.campaign__footer a{display:flex;gap:24px;align-items:center;color:#d0b77f;min-height:44px}
+.collection-intro{display:flex;justify-content:space-between;gap:24px;margin-top:68px;margin-bottom:24px;font-size:10px;letter-spacing:.14em;color:#777064}
+#product{padding-bottom:88px}
+.product{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);column-gap:clamp(38px,6vw,90px)}
+.product>.detail__head{padding-top:20px}
+.detail__head .h2{font-size:clamp(56px,5vw,76px);font-weight:500;line-height:.95;letter-spacing:-.055em}
+.detail__head .eyebrow{font-size:10px;letter-spacing:.16em;color:#8f743e}
+.detail__price b{font-size:32px}
+.detail__price span{font-size:12px}
+.gallery__stage{background:#e6e1d5;border:0;border-radius:0;aspect-ratio:1.02}
+.gallery__stage::before{color:#d5cebd;opacity:.5}
+.gallery__tag{color:#6e6758;letter-spacing:.14em}
+.gallery__tag b{border-color:#bfb7a4}
+.gallery__zoom{border-radius:0;background:#f2efe8;border-color:#c9c1af}
+.gallery__stage .plate__photo{filter:drop-shadow(0 16px 12px #17140f12)}
+.gallery__tools{margin-top:14px}
+.thumb{background:#e6e1d5;border-radius:0;width:64px;height:70px}
+.thumb[aria-pressed=true]{border-color:#9f8148;box-shadow:inset 0 -2px #9f8148}
+.plate__caption{color:#6e6758}
+.detail>.lede{font-size:15px;line-height:1.75}
+.included{font-size:12px}
+.size{border-color:#c9c2b4;border-radius:0;min-height:48px}
+.size[aria-checked=true]{background:#151513;border-color:#151513}
+.size-feedback{font-size:11px;min-height:20px}
+.buy .btn,.btn{border-radius:0}
+.btn--gold,.buy .btn--gold{background:#171714;border-color:#171714;color:#f6f2e8}
+.btn--gold:hover,.buy .btn--gold:hover{background:#403724;border-color:#403724}
+.buy .qty{border-color:#c9c2b4;border-radius:0}
+.product-facts details{border-color:#d7d2c7}
+.terms{gap:10px;font-size:10px}
+.color-list small,.stock--live{color:#535c43}
+.stock--live span{background:#737e5f}
+.editions{background:#171715;color:#eee9df;border-top:1px solid #353129;border-bottom:1px solid #353129}
+.editions__head{align-items:end;margin-bottom:36px}
+.editions__head .h2{font-size:clamp(44px,5vw,74px);letter-spacing:-.05em;line-height:.98}
+.editions .eyebrow--gold{color:#c2aa74}
+.editions .lede{color:#aba69b;max-width:34ch}
+.edition-grid{gap:28px 20px}
+.edition-card{border:0;border-radius:0;background:transparent;color:#f3eee3}
+.edition-card__art{border-radius:0;background:#ded8cb!important;transition:background .25s}
+.edition-card:hover .edition-card__art{box-shadow:inset 0 0 0 1px #c7aa6c}
+.edition-card__body{padding-top:17px}
+.edition-card__body h3{font-size:20px;font-weight:400;letter-spacing:-.025em}
+.edition-card__body span{font-size:9px;letter-spacing:.1em;color:#d4bc86}
+.editions .stock{color:#9b988f;font-size:10px}
+.editions .stock--live{color:#d4bc86}
+.editions .stock--live span{background:#c9af78}
+.signature{padding-top:88px;padding-bottom:88px}
+.signature__heading .h2{font-size:clamp(46px,5.3vw,80px);line-height:.98}
+.signature__heading>p{color:#696257;font-size:14px;line-height:1.7}
+.detail-shot{border-radius:0;background:#e6e1d5}
+.detail-shot figcaption{color:#f7f1e4}
+.service{border-top:1px solid #d7d2c7;padding-top:30px;padding-bottom:45px}
+.service h2{font-size:15px;font-weight:500}
+.service p{font-size:12px}
+.faq{background:#e8e3d8}
+.faq .h2{font-size:clamp(44px,5vw,68px)}
+.faq__list details{border-color:#c9c2b4}
+.faq__list summary{font-size:16px;min-height:60px}
+.club{border-radius:0;background:#e3dccb;padding:60px}
+.club .h2{font-size:clamp(45px,5.4vw,76px);line-height:.98}
+.club .lede{max-width:42ch;margin-top:20px}
+.footer{background:#111110;color:#e6dfd0;border-top:1px solid #302d25}
+.footer__signature{font-size:clamp(44px,11.5vw,180px);color:#3c3527;font-weight:500;letter-spacing:-.055em}
+.footer__base{color:#8d887b;border-top-color:#302d25}
+.footer__col h2{color:#b59b66}
+.footer__col a{color:#c4bfb3}
+.bag__panel{background:#f2efe8;color:#151513;border-left:1px solid #c9c2b4}
+.bag__head{background:#171715;color:#f2ede2;margin:-1px -1px 0;padding:26px}
+.bag__head .icon-btn:hover{background:#353128}
+.bag__subtitle{color:#c5ad77}
+.bag__foot{background:#ebe5d8;border-top-color:#d4cbbb}
+.bag__foot .btn--gold{background:#171715;color:#f5efe2;border-color:#171715}
+.bag__foot .btn--gold:hover{background:#403724}
+.line__art{background:#e1dacb}
+.buybar{background:#171715;color:#f3eee2;border-color:#393329}
+.buybar .btn--gold{background:#d1b780;color:#171610;border-color:#d1b780}
+.buybar__price>span{color:#bbb3a1}
+.buybar select{color:#171715;background:#f3eee2}
+.edition-preview{background:#f2efe8;border-radius:0}
+.edition-preview__art{background:#e3dccd;border-radius:0}
+@media(min-width:1600px){.campaign__inner{padding-top:60px}.campaign__art{min-height:590px}}
+@media(max-width:1000px){.campaign__inner{gap:28px}.campaign h1{font-size:clamp(58px,7.6vw,82px)}.campaign__art{min-height:450px}.campaign__pieces{min-height:340px}.campaign__intro{font-size:14px}.campaign__footer>span:last-child{display:none}.product{column-gap:35px}.club{padding:40px}}
+@media(max-width:650px){
+ .announce{font-size:8px;gap:12px;letter-spacing:.06em}.announce>span:last-child,.announce>span:nth-last-child(2){display:none}
+ .header__bar{min-height:68px}.header .brand__name{font-size:18px}.header .brand img{width:30px;height:32px}
+ .campaign__inner{padding-top:30px;grid-template-columns:1fr;gap:0}
+ .campaign__copy{padding:0 0 28px}.campaign__eyebrow{font-size:8px;letter-spacing:.12em;margin-bottom:24px}
+ .campaign h1{font-size:clamp(58px,15vw,92px);line-height:.88}
+ .campaign__intro{font-size:13px;margin-top:20px}
+ .campaign__cta{margin-top:24px;width:100%;justify-content:space-between;padding:16px 20px;min-height:54px}
+ .campaign__spec{max-width:none;margin-top:18px;padding-top:14px}.campaign__spec strong{font-size:24px}
+ .campaign__art{min-height:370px}.campaign__pieces{min-height:290px}.campaign__art-label{padding:17px;font-size:8px}
+ .campaign__art-caption{margin-inline:17px;padding-block:13px;font-size:8px}
+ .campaign__footer{margin-top:24px;min-height:55px;font-size:8px;letter-spacing:.06em}.campaign__footer>span:first-child{display:none}.campaign__footer a{width:100%;justify-content:space-between}
+ .collection-intro{margin-top:40px;margin-bottom:17px;font-size:8px;letter-spacing:.1em}
+ .product{grid-template-columns:1fr;gap:0}.product>.detail__head{grid-column:1;grid-row:1;padding-top:0;margin-bottom:20px}.product>.gallery{grid-column:1;grid-row:2}.product>.detail{grid-column:1;grid-row:3}
+ .detail__head .h2{font-size:46px;margin:8px 0 14px}.detail__head .h2 br{display:none}.detail__price b{font-size:27px}
+ .gallery__stage{aspect-ratio:1.04}.thumb{width:48px;height:56px}.gallery__tools{grid-template-columns:1fr auto;gap:8px}.gallery__pagination{gap:5px}
+ .detail>.lede{font-size:14px}.included{margin-top:22px}.size{min-height:48px}
+ #product{padding-bottom:48px}.editions{padding-block:50px}.editions__head{display:block}.editions__head .lede{margin-top:20px}.editions__head .h2{font-size:48px}
+ .edition-grid{gap:26px 14px}.edition-card__body h3{font-size:18px}
+ .signature{padding-block:52px}.signature__heading .h2{font-size:48px}.service{padding-block:26px}
+ .club{padding:30px 23px}.club .h2{font-size:46px}.club__actions .btn{width:100%}
+ .bag__head{padding:22px}.footer__signature{font-size:11.5vw}
+}
+@media(prefers-reduced-motion:reduce){.campaign__pieces img{transition:none}}
