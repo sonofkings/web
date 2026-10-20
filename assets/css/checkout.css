@@ -22,3 +22,38 @@ body{background:#f8f6f0}.checkout-header{background:#171c16;color:#f5f1e6;max-wi
 #payment-actions section[hidden]{display:none}
 #payment-actions .pay-link:disabled{opacity:.6;cursor:wait}
 @media(max-width:400px){.summary{padding:20px}.checkout-layout{padding-inline:16px}.wordmark{font-size:16px}}
+
+/* Clear totals and compact, accessible shipping and card fields. */
+.checkout-breakdown{margin:18px 0 26px;padding:0}
+.checkout-breakdown>div{display:flex;justify-content:space-between;gap:20px;padding:7px 0;font-size:14px}
+.checkout-breakdown dt,.checkout-breakdown dd{margin:0}
+.checkout-breakdown dd{font-variant-numeric:tabular-nums}
+.checkout-breakdown .breakdown-total{margin-top:10px;padding-top:18px;border-top:1px solid #c8cbbb;font-size:24px;font-weight:500;letter-spacing:-.025em}
+.shipping-form{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px 12px}
+.shipping-form .shipping-label{margin:0;min-width:0}
+.shipping-name,.shipping-address_line_1,.shipping-address_line_2{grid-column:1/-1}
+.shipping-label select{display:block;width:100%;min-height:48px;margin-top:6px;padding:12px 8px;border:1px solid #bec3b2;border-radius:3px;background:#fff;color:var(--ink);font:16px Jost,Arial,sans-serif}
+.shipping-label select:focus{outline:2px solid var(--gold);outline-offset:2px}
+#payment-actions section{display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
+#payment-actions section>h3,#card-name,#card-number,#payment-actions section>.pay-link,#payment-actions section>.fine{grid-column:1/-1}
+#payment-actions section .card-field{margin:6px 0;min-height:56px}
+#payment-actions section>.pay-link{margin-top:18px}
+.summary .fine{font-size:12px}
+#payment-actions [role=status]{min-height:21px}
+@media(max-width:420px){.shipping-form{grid-template-columns:1fr 1fr}.shipping-admin_area_2{grid-column:1/-1}.checkout-breakdown .breakdown-total{font-size:25px}}
+
+/* Carry the house palette into secure checkout. */
+:root{--paper:#f2efe8;--ink:#151513;--body:#625f58;--gold:#a78a53;--rule:#d7d2c7}
+body{background:#f2efe8}
+.checkout-header{background:#111110;border-bottom-color:#353128}
+.wordmark{letter-spacing:.025em;font-size:20px}
+.checkout-layout{max-width:1320px;padding-top:48px;gap:clamp(36px,6vw,80px)}
+.summary{background:#e8e2d5;border:1px solid #d1c8b6;border-radius:0;padding:32px}
+.product h2{font-size:21px}.checkout-art{background:#e3dccd;border-radius:0}
+.item-size,.item-qty{border-radius:0;border-color:#c5bcaa}
+.shipping-label input,.shipping-label select,.card-field{border-radius:0;border-color:#c6bdab}
+.pay-link{background:#171715;border-color:#171715;color:#f5efe2;border-radius:0;min-height:56px}
+.pay-link:hover{background:#403724;border-color:#403724;color:#fff}
+.checkout-breakdown .breakdown-total{border-color:#c8bfae;font-size:28px}
+.checkout-progress{letter-spacing:.12em}
+@media(max-width:800px){.checkout-layout{padding:28px 20px 48px;gap:30px}.summary{padding:24px}.wordmark{font-size:17px}.checkout-progress{font-size:9px}}
