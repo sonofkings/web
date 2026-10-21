@@ -56,7 +56,7 @@
 
   var sizeList=$('#size-list');sizeList.replaceChildren();SITE.sizes.forEach(function(size){var b=document.createElement('button');b.className='size';b.type='button';b.dataset.size=size;b.textContent=size;b.setAttribute('role','radio');b.setAttribute('aria-checked','false');sizeList.appendChild(b)});
   var stickySizes=$('#buybar-select');SITE.sizes.filter(function(x){return !Array.from(stickySizes.options).some(function(o){return o.value===x})}).forEach(function(x){var o=document.createElement('option');o.value=x;o.textContent=x;stickySizes.appendChild(o)});
-  var swatches={Black:'#1b1b1e',Navy:'#162640','Royal Blue':'#2558a4','Forest Green':'#234936',Marble:'#b5b1aa',Crimson:'#9a2537'};
+  var swatches={Black:'#1b1b1e',Navy:'#2558a4','Royal Blue':'#162640','Forest Green':'#234936',Marble:'#b5b1aa',Crimson:'#9a2537'};
   var colorList=$('.color-list');colorList.replaceChildren();Object.keys(SITE.colors).forEach(function(c){var b=document.createElement('button');b.className='color-choice';b.type='button';b.dataset.colorChoice=c;b.setAttribute('aria-label',c);b.setAttribute('aria-pressed',String(c===chosenColor));b.style.setProperty('--swatch',swatches[c]);colorList.appendChild(b)});
   var cards=$$('.edition-card');
   $$('[data-color-choice]').forEach(function(b){on(b,'click',function(){var c=b.dataset.colorChoice;if(SITE.colors[c].available)setColor(c);else openEdition(c)})});
