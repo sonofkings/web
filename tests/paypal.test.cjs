@@ -18,7 +18,7 @@ globalThis.fetch=async(url,options={})=>{
  return {ok:true,json:async()=>order};
 };
 async function invoke(method,body,settings=env){let status=200,data;const res={setHeader(){},status(n){status=n;return this},json(d){data=d;return this}};await handler({method,body,env:settings},res);return {status,data}}
-const create=(extra={})=>invoke('POST',{action:'create',paymentMethod:'card',shipping,items,expectedTotalCents:30700,...extra});
+const create=(extra={})=>invoke('POST',{action:'create',paymentMethod:'card',shipping,items,expectedTotalCents:60400,...extra});
 async function run(){
  try{
  assert.equal((await invoke('GET')).data.shippingCents,1000);
@@ -30,16 +30,22 @@ async function run(){
  assert.equal((await create({paymentMethod:'invalid'})).status,400);
  assert.equal((await create({shipping:{...shipping,address:{...shipping.address,admin_area_1:'ZZ'}}})).status,400);
  assert.equal((await create({expectedTotalCents:29700})).status,409);
+ for(const [product,cents] of [['pants',9600],['hoodie',12600],['set',19800]]){
+ assert.equal((await create({items:[{color:'Black',size:'M',quantity:1,product}],expectedTotalCents:cents+1000})).status,200);
+ assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].items[0].unit_amount.value,(cents/100).toFixed(2));
+ }
+ assert.equal((await create({items:[{color:'Black',size:'M',quantity:1,product:'pants'},{color:'Black',size:'M',quantity:1,product:'hoodie'}],expectedTotalCents:23200})).status,200);
+ assert.equal((await create({items:[{...items[0],product:'invalid'}]})).status,400);
  assert.equal((await create()).status,200);
  let payload=JSON.parse(requests.at(-1).options.body),unit=payload.purchase_units[0];
- assert.equal(unit.amount.value,'307.00');
+ assert.equal(unit.amount.value,'604.00');
  assert.equal(unit.amount.breakdown.shipping.value,'10.00');
  assert.equal(unit.items.length,2);
  assert.equal(payload.payment_source.card.attributes.verification.method,'SCA_WHEN_REQUIRED');
  await create({paymentMethod:'paypal'});
  assert.equal(JSON.parse(requests.at(-1).options.body).payment_source.paypal.experience_context.shipping_preference,'SET_PROVIDED_ADDRESS');
- await invoke('POST',{action:'create',paymentMethod:'card',shipping,items,expectedTotalCents:33156},{...env,CHECKOUT_TAX_BPS:'800'});
- assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].amount.value,'331.56');
+ await invoke('POST',{action:'create',paymentMethod:'card',shipping,items,expectedTotalCents:65232},{...env,CHECKOUT_TAX_BPS:'800'});
+ assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].amount.value,'652.32');
  const signed={...unit,invoice_id:'test-invoice'};signed.custom_id=createHmac('sha256',env.PAYPAL_CLIENT_SECRET).update(signed.invoice_id+':'+signed.amount.value).digest('hex');
  order={id:'TESTORDER12345',status:'APPROVED',purchase_units:[signed]};
  assert.equal((await invoke('POST',{action:'capture',orderID:order.id})).status,200);
@@ -51,7 +57,7 @@ async function run(){
  order.purchase_units[0]=signed;order.purchase_units[0].custom_id=createHmac('sha256',env.PAYPAL_CLIENT_SECRET).update(signed.invoice_id+':'+signed.amount.value).digest('hex');
  order={...order,status:'COMPLETED',purchase_units:[{...signed,payments:{captures:[{status:'COMPLETED',amount:signed.amount}]}}]};
  const before=requests.filter(x=>x.url.endsWith('/capture')).length;
- assert.equal((await invoke('POST',{action:'capture',orderID:order.id})).data.total,'307.00');
+ assert.equal((await invoke('POST',{action:'capture',orderID:order.id})).data.total,'604.00');
  assert.equal(requests.filter(x=>x.url.endsWith('/capture')).length,before);
  console.log('PayPal checkout regression checks passed.');
  }finally{globalThis.fetch=originalFetch}

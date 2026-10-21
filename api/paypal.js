@@ -1,4 +1,6 @@
 const { createHmac, randomUUID, timingSafeEqual } = require('node:crypto');
+const PRICES={set:19800,pants:9600,hoodie:12600};
+const NAMES={set:'Crest Tracksuit',pants:'Crest Pants',hoodie:'Crest Hoodie'};
 const SIZES = new Set(['S','M','L','XL','XXL']);
 const STATES = new Set('AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' '));
 module.exports = async (req,res) => {
@@ -22,7 +24,7 @@ module.exports = async (req,res) => {
     let cart;
     if(body.action === 'create') {
       cart=body.items;
-      if(!Array.isArray(cart)||!cart.length||cart.length>5||new Set(cart.map(x=>x&&x.size)).size!==cart.length||cart.some(x=>!x||x.color!=='Black'||!SIZES.has(x.size)||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>9)) return res.status(400).json({error:'Invalid cart'});
+      if(!Array.isArray(cart)||!cart.length||cart.length>15||new Set(cart.map(x=>x&&(x.product||'set')+'|'+x.size)).size!==cart.length||cart.some(x=>!x||!Object.hasOwn(PRICES,x.product||'set')||x.color!=='Black'||!SIZES.has(x.size)||!Number.isInteger(x.quantity)||x.quantity<1||x.quantity>9)) return res.status(400).json({error:'Invalid cart'});
     } else if(!/^[A-Z0-9]{10,32}$/.test(body.orderID||'')) return res.status(400).json({error:'Invalid order'});
     const auth=await fetch(apiBase+'/v1/oauth2/token',{method:'POST',headers:{Authorization:'Basic '+Buffer.from(env.PAYPAL_CLIENT_ID+':'+env.PAYPAL_CLIENT_SECRET).toString('base64'),'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=client_credentials',signal:AbortSignal.timeout(15000)});
     const token=await auth.json(); if(!auth.ok||!token.access_token) throw Error('PayPal authentication failed');
@@ -32,11 +34,11 @@ module.exports = async (req,res) => {
       if(!s||typeof s.name!=='string'||!s.name.trim()||s.name.length>100||!s.address||s.address.country_code!=='US'||['address_line_1','admin_area_2','admin_area_1','postal_code'].some(k=>typeof s.address[k]!=='string'||!s.address[k].trim()||s.address[k].length>100)||!STATES.has(s.address.admin_area_1)||!/^\d{5}(-\d{4})?$/.test(s.address.postal_code)) return res.status(400).json({error:'Please enter a valid U.S. shipping address.'});
       const shipping={name:{full_name:s.name.trim()},address:{country_code:'US'}};
       for(const k of ['address_line_1','address_line_2','admin_area_2','admin_area_1','postal_code']) if(typeof s.address[k]==='string'&&s.address[k].trim()) shipping.address[k]=s.address[k].trim().slice(0,100);
-      const subtotal=cart.reduce((n,x)=>n+x.quantity*9900,0),tax=Math.round((subtotal+shippingCents)*taxBps/10000);
+      const subtotal=cart.reduce((n,x)=>n+x.quantity*PRICES[x.product||'set'],0),tax=Math.round((subtotal+shippingCents)*taxBps/10000);
       const totalCents=subtotal+shippingCents+tax;
       if(body.expectedTotalCents!==totalCents)return res.status(409).json({error:'Your order total changed. Refresh checkout to review the latest total.'});
       const money=n=>(n/100).toFixed(2),value=money(subtotal+shippingCents+tax),invoice=randomUUID();
-      const order=await api('/v2/checkout/orders','POST',{intent:'CAPTURE',purchase_units:[{reference_id:'SONOFKINGS',invoice_id:invoice,custom_id:signature(invoice,value),shipping,amount:{currency_code:'USD',value,breakdown:{item_total:{currency_code:'USD',value:money(subtotal)},shipping:{currency_code:'USD',value:money(shippingCents)},tax_total:{currency_code:'USD',value:money(tax)}}},items:cart.map(x=>({name:'Black Crest Tracksuit — '+x.size,sku:'SOK-BLACK-'+x.size,quantity:String(x.quantity),unit_amount:{currency_code:'USD',value:'99.00'},category:'PHYSICAL_GOODS'}))}],payment_source:body.paymentMethod==='card'?{card:{attributes:{verification:{method:'SCA_WHEN_REQUIRED'}}}}:{paypal:{experience_context:{brand_name:'Son of Kings',shipping_preference:'SET_PROVIDED_ADDRESS',user_action:'PAY_NOW',return_url:'https://sonofkings.com/checkout/',cancel_url:'https://sonofkings.com/checkout/'}}}},invoice);
+      const order=await api('/v2/checkout/orders','POST',{intent:'CAPTURE',purchase_units:[{reference_id:'SONOFKINGS',invoice_id:invoice,custom_id:signature(invoice,value),shipping,amount:{currency_code:'USD',value,breakdown:{item_total:{currency_code:'USD',value:money(subtotal)},shipping:{currency_code:'USD',value:money(shippingCents)},tax_total:{currency_code:'USD',value:money(tax)}}},items:cart.map(x=>({name:'Black '+NAMES[x.product||'set']+' — '+x.size,sku:'SOK-BLACK-'+(x.product||'set')+'-'+x.size,quantity:String(x.quantity),unit_amount:{currency_code:'USD',value:money(PRICES[x.product||'set'])},category:'PHYSICAL_GOODS'}))}],payment_source:body.paymentMethod==='card'?{card:{attributes:{verification:{method:'SCA_WHEN_REQUIRED'}}}}:{paypal:{experience_context:{brand_name:'Son of Kings',shipping_preference:'SET_PROVIDED_ADDRESS',user_action:'PAY_NOW',return_url:'https://sonofkings.com/checkout/',cancel_url:'https://sonofkings.com/checkout/'}}}},invoice);
       if(!order.id)throw Error('Missing PayPal order ID');
       return res.status(200).json({id:order.id});
     }

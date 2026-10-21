@@ -145,3 +145,5 @@ html,body{background:var(--paper)}
  .bag__head{padding:22px}.footer__signature{font-size:11.5vw}
 }
 @media(prefers-reduced-motion:reduce){.campaign__pieces img{transition:none}}
+
+.campaign__crest{width:clamp(130px,16vw,230px);height:auto;object-fit:contain;margin:0 0 28px}.piece-picker{display:grid;gap:10px;margin:24px 0;font-size:12px}.piece-picker select{width:100%;padding:15px;background:var(--paper);color:var(--ink);border:1px solid #b8ab91;font:inherit;font-size:16px}

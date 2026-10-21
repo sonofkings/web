@@ -1,6 +1,6 @@
 # Son of Kings
 
-Custom storefront for the $99 Crest Tracksuit, with $10 flat shipping per order.
+Custom storefront for the $198 Crest Tracksuit, with $10 flat shipping per order.
 Frontend: static HTML/CSS/JavaScript. Backend: Cloudflare Worker and PayPal Orders API.
 No Shopify services are used.
 
@@ -27,7 +27,7 @@ Store credentials only in Cloudflare Worker settings. Never commit them or paste
 - `CHECKOUT_TAX_BPS`: explicitly confirmed fixed tax rate in basis points, including explicit zero where appropriate.
 
 Shipping is fixed in server code at **1000 cents per order**, independent of quantity or size count.
-The server computes $99 per set plus $10 shipping plus configured tax and rejects a checkout
+The server computes $198 per set, $96 per pair of pants, or $126 per hoodie plus $10 shipping plus configured tax and rejects a checkout
 if its displayed total no longer matches server pricing. There is no shipping override in the browser.
 Tax is currently a fixed configured rate applied to subtotal plus shipping. This is not a destination-based
 tax engine. Confirm the actual business tax requirements before enabling; add destination-based
