@@ -153,3 +153,16 @@ html,body{background:var(--paper)}
 .color-list .color-choice{background:var(--swatch)}
 .size[aria-disabled="true"]{text-decoration:line-through}
 .line__art img:only-child{width:100%;height:100%;inset:0}
+
+/* Collection information */
+.product-facts__label{margin:0 0 14px;color:var(--gold);letter-spacing:.14em}
+.product-facts .collection-story__body{padding:8px 0 26px}
+.product-facts .collection-story__eyebrow{margin:0 0 12px;padding:0;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#806333}
+.product-facts .collection-story h3{margin:0 0 18px;font-size:30px;line-height:1.12;font-weight:500;letter-spacing:-.035em}
+.product-facts .collection-story__body p:not(.collection-story__eyebrow){padding:0;margin:0 0 16px;font-size:14px;line-height:1.7;color:var(--body)}
+.product-facts .collection-story__body strong{font-weight:500;color:var(--ink)}
+.product-facts .collection-story__body .collection-story__closing{margin:0;padding:14px 0 0;border-top:1px solid var(--rule);color:var(--ink)}
+.collection-origin__list{margin:0;padding:4px 0 20px}
+.collection-origin__list div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:8px 0;font-size:13px;line-height:1.5}
+.collection-origin__list dt{color:var(--body)}
+.collection-origin__list dd{margin:0;font-weight:500;color:var(--ink)}
