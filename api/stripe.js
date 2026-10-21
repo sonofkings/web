@@ -32,7 +32,7 @@ async function reconcile(env,stripe,session,eventType){
 }
 async function handler(req,res){
  const env=req.env||process.env,c=settings(env);res.setHeader('Cache-Control','no-store');
- if(req.method==='GET')return res.status(200).json({enabled:c.enabled,live:c.live,publishableKey:c.enabled?c.publishable:null,shippingCents:1000,taxBps:0});
+ if(req.method==='GET')return res.status(200).json({enabled:c.enabled,live:c.live,publishableKey:c.enabled?c.publishable:null,shippingCents:1000,taxBps:0,configuration:{serverKey:!c.secret?'missing':/^(rk|sk)_live_/.test(c.secret)?'live':/^(rk|sk)_test_/.test(c.secret)?'test':'invalid_format',publishableKey:!c.publishable?'missing':c.publishable.startsWith('pk_live_')?'live':c.publishable.startsWith('pk_test_')?'test':'invalid_format',webhookConfigured:Boolean(env.STRIPE_WEBHOOK_SECRET),inventoryConfigured:Boolean(env.INVENTORY),enabledFlag:env.STRIPE_ENABLED==='true',zeroTaxConfigured:env.CHECKOUT_TAX_BPS==='0'}});
  if(req.method!=='POST')return res.status(405).json({error:'Method not allowed'});
  const body=req.body||{};
  if(!c.secret||!env.INVENTORY)return res.status(503).json({error:'Stripe is not configured.'});
