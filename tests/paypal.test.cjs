@@ -62,7 +62,7 @@ async function run(){
  assert.equal(requests.filter(x=>x.url.endsWith('/capture')).length,before);
  for(const color of ['Navy','Royal Blue','Forest Green','Marble','Crimson']){
  assert.equal((await create({items:[{color,size:'XL',quantity:1,product:'hoodie'}],expectedTotalCents:13600})).status,200);
- assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].items[0].name.startsWith(color+' '),true);
+ assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].items[0].name.startsWith(require('../assets/js/inventory.js').colorName(color)+' '),true);
  }
  assert.equal((await create({items:[{color:'Black',size:'4XL',quantity:1}],expectedTotalCents:20800})).status,200);
  const rejectStock={...env,INVENTORY:{idFromName:()=> 'store',get:()=>({fetch:async()=>Response.json({ok:false,error:'Stock unavailable'})})}};

@@ -9,5 +9,6 @@
  };
  function quantity(data,color,size,product){const row=data[color]?.[size]||[0,0];return product==='hoodie'?row[0]:product==='pants'?row[1]:Math.min(...row)}
  function demand(items){const out={};for(const x of items){const k=x.color+'|'+x.size;const row=out[k]||(out[k]=[0,0]);if(x.product!=='pants')row[0]+=x.quantity;if(x.product!=='hoodie')row[1]+=x.quantity}return out}
- const api={sizes,stock,quantity,demand};if(typeof module==='object')module.exports=api;else root.SOKInventory=api;
+ function colorName(color){return color==='Navy'?'Royal Blue':color==='Royal Blue'?'Navy':color}
+ const api={sizes,stock,quantity,demand,colorName};if(typeof module==='object')module.exports=api;else root.SOKInventory=api;
 })(typeof window==='object'?window:globalThis);
