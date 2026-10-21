@@ -1,0 +1,22 @@
+const assert=require('node:assert/strict');
+const data=require('../assets/js/inventory.js');
+(async()=>{
+ const {Inventory}=await import('../api/inventory.mjs');
+ const db=new Map();let queue=Promise.resolve();const storage={async get(k){return structuredClone(db.get(k))},async put(k,v){db.set(k,structuredClone(v))},transaction(fn){const next=queue.then(()=>fn(storage));queue=next.catch(()=>{});return next}};
+ const service=new Inventory({storage,blockConcurrencyWhile:fn=>fn()});
+ const call=async(action,extra={})=>(await service.fetch(new Request('https://inventory/',{method:'POST',body:JSON.stringify({action,...extra})}))).json();
+ let stock=(await call('read')).stock;
+ const totals=Object.values(stock).flatMap(Object.values).reduce((a,r)=>[a[0]+r[0],a[1]+r[1]],[0,0]);assert.deepEqual(totals,[41,40]);
+ assert.equal(data.quantity(stock,'Black','XL','set'),5);assert.equal(data.quantity(stock,'Black','XL','pants'),6);
+ assert.equal(data.quantity(stock,'Black','XXL','hoodie'),13);assert.equal(data.quantity(stock,'Navy','XXL','set'),0);assert.equal(data.quantity(stock,'Navy','XXL','hoodie'),1);
+ const items=[{color:'Black',size:'S',product:'set',quantity:1}];
+ await call('register',{id:'one',items});await call('register',{id:'two',items:[{color:'Black',size:'S',product:'pants',quantity:1}]});
+ const attempts=await Promise.all([call('reserve',{id:'one'}),call('reserve',{id:'two'})]);assert.equal(attempts.filter(x=>x.ok).length,1);
+ assert.equal((await call('reserve',{id:'one'})).ok,true);await call('complete',{id:'one'});await call('complete',{id:'one'});
+ stock=(await call('read')).stock;assert.deepEqual(stock.Black.S,[0,0]);
+ assert.equal((await call('check',{items:[{color:'Navy',size:'XL',product:'set',quantity:1},{color:'Navy',size:'XL',product:'hoodie',quantity:1}]})).ok,false);
+ assert.equal((await call('reserve',{id:'unknown'})).ok,false);
+ assert.equal((await call('check',{items:[{color:'Black',size:'M',product:'hoodie',quantity:1}]})).ok,false);
+ assert.equal((await call('check',{items:[{color:'Black',size:'4XL',product:'set',quantity:2}]})).ok,true);
+ console.log('Inventory totals, shared stock, concurrent purchase and idempotency checks passed.');
+})().catch(e=>{console.error(e);process.exitCode=1});

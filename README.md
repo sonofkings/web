@@ -50,8 +50,7 @@ order creation is disabled, provided credentials remain configured. The checkout
 settings are missing. The former hosted payment-link fallback is removed because its shipping settings
 cannot be guaranteed to match the $10 policy.
 
-PayPal merchant transaction records are the fulfillment record. No separate order database, automatic
-merchant notification system, stock reservation or destination-based tax calculation is included.
+PayPal merchant transaction records are the fulfillment record. A durable inventory coordinator shares stock between sets, hoodies and pants. Stock is checked at order creation and atomically reserved immediately before capture; completed payments consume the reservation once. Failed or uncertain captures retain their reservation for merchant reconciliation, preventing another customer from buying pieces that may have been charged. No automatic merchant notification system or destination-based tax calculation is included.
 The legacy Stripe endpoint remains dormant and is not offered by this checkout.
 
 ## Validation and launch
@@ -65,3 +64,7 @@ Still required for production activation: verify the deployed settings and live 
 test sandbox card success, decline, 3DS, PayPal wallet, cancel, refresh and interrupted capture;
 verify desktop/mobile browser rendering and real endpoint behavior; confirm the tax policy.
 A passing build is not proof that live payments are enabled or end-to-end tested.
+
+## Inventory
+
+Inventory v1 begins with 39 matched sets, 2 extra hoodies and 1 extra pair of pants (41 hoodies / 40 pants). The authoritative stock is initialized once in the Inventory Durable Object, never reset by a redeploy. `/api/inventory` exposes current availability with no caching. Client quantities are advisory; checkout enforces combined component demand on the server. An unapproved or abandoned PayPal order does not hold stock. A checkout that loses a race for stock is rejected before capture. Reserved payments with ambiguous results remain held and can be retried by order ID without deducting twice. Reconcile these holds against PayPal before restoring stock; there is no automated restock or inventory admin UI yet. Future quantity updates must modify durable state rather than the initial seed.

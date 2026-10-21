@@ -1,8 +1,13 @@
 import checkout from './api/checkout.js';
 import paypal from './api/paypal.js';
+export { Inventory } from './api/inventory.mjs';
 export default {
  async fetch(request,env){
   const url=new URL(request.url);
+  if(url.pathname==='/api/inventory' && request.method==='GET'){
+   if(!env.INVENTORY)return Response.json({error:'Inventory unavailable'},{status:503});
+   const response=await env.INVENTORY.get(env.INVENTORY.idFromName('store')).fetch('https://inventory/',{method:'POST',body:JSON.stringify({action:'read'})});return new Response(response.body,{headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+  }
   if(!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
   const handler={'/api/checkout':checkout,'/api/paypal':paypal}[url.pathname];
   if(!handler) return Response.json({error:'Not found'},{status:404});

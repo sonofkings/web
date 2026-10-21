@@ -6,6 +6,7 @@ new Function(require('node:fs').readFileSync(require('node:path').join(__dirname
 const handler=require('../api/paypal.js');
 const {createHmac}=require('node:crypto');
 const env={PAYPAL_CLIENT_ID:'test-client',PAYPAL_CLIENT_SECRET:'test-secret',PAYPAL_EMBEDDED_ENABLED:'true',CHECKOUT_TAX_BPS:'0',PAYPAL_ENV:'sandbox'};
+env.INVENTORY={idFromName:()=> 'store',get:()=>({fetch:async()=>Response.json({ok:true})})};
 const shipping={name:'Test Buyer',address:{country_code:'US',address_line_1:'1 Main St',admin_area_2:'Chicago',admin_area_1:'IL',postal_code:'60601'}};
 const items=[{color:'Black',size:'M',quantity:2},{color:'Black',size:'L',quantity:1}];
 let requests=[],order=null,captureStatus='COMPLETED';
@@ -59,6 +60,16 @@ async function run(){
  const before=requests.filter(x=>x.url.endsWith('/capture')).length;
  assert.equal((await invoke('POST',{action:'capture',orderID:order.id})).data.total,'604.00');
  assert.equal(requests.filter(x=>x.url.endsWith('/capture')).length,before);
+ for(const color of ['Navy','Royal Blue','Forest Green','Marble','Crimson']){
+ assert.equal((await create({items:[{color,size:'XL',quantity:1,product:'hoodie'}],expectedTotalCents:13600})).status,200);
+ assert.equal(JSON.parse(requests.at(-1).options.body).purchase_units[0].items[0].name.startsWith(color+' '),true);
+ }
+ assert.equal((await create({items:[{color:'Black',size:'4XL',quantity:1}],expectedTotalCents:20800})).status,200);
+ const rejectStock={...env,INVENTORY:{idFromName:()=> 'store',get:()=>({fetch:async()=>Response.json({ok:false,error:'Stock unavailable'})})}};
+ assert.equal((await invoke('POST',{action:'create',paymentMethod:'card',shipping,items,expectedTotalCents:60400},rejectStock)).status,409);
+ order.status='APPROVED';const capturesBefore=requests.filter(x=>x.url.endsWith('/capture')).length;
+ assert.equal((await invoke('POST',{action:'capture',orderID:order.id},rejectStock)).status,409);
+ assert.equal(requests.filter(x=>x.url.endsWith('/capture')).length,capturesBefore);
  console.log('PayPal checkout regression checks passed.');
  }finally{globalThis.fetch=originalFetch}
 }
