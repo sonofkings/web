@@ -147,3 +147,9 @@ html,body{background:var(--paper)}
 @media(prefers-reduced-motion:reduce){.campaign__pieces img{transition:none}}
 
 .campaign__crest{width:clamp(130px,16vw,230px);height:auto;object-fit:contain;margin:0 0 28px}.piece-picker{display:grid;gap:10px;margin:24px 0;font-size:12px}.piece-picker select{width:100%;padding:15px;background:var(--paper);color:var(--ink);border:1px solid #b8ab91;font:inherit;font-size:16px}
+
+/* Inventory options stay readable across all colors and sizes. */
+.color-list,.size-list{flex-wrap:wrap}
+.color-list .color-choice{background:var(--swatch)}
+.size[aria-disabled="true"]{text-decoration:line-through}
+.line__art img:only-child{width:100%;height:100%;inset:0}

@@ -57,3 +57,5 @@ body{background:#f2efe8}
 .checkout-breakdown .breakdown-total{border-color:#c8bfae;font-size:28px}
 .checkout-progress{letter-spacing:.12em}
 @media(max-width:800px){.checkout-layout{padding:28px 20px 48px;gap:30px}.summary{padding:24px}.wordmark{font-size:17px}.checkout-progress{font-size:9px}}
+
+.checkout-art img:only-child{width:100%;height:100%;inset:0;object-fit:contain}
