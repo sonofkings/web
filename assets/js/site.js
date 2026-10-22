@@ -9,7 +9,7 @@
   var money = function(n){return '$'+n.toFixed(2)};
 
   var SITE={
-    email:'sonofkings591@gmail.com', phone:'+18165911437', price:198,
+    email:'sonofkings591@gmail.com', phone:'+18165911437', price:200,
     sizes:SOKInventory.sizes, max:9,
     colors:{
       Black:{front:'assets/img/black-hoodie.webp',back:'assets/img/black-trousers.webp',available:true},
@@ -29,7 +29,7 @@
   function load(){try{var x=JSON.parse(localStorage.getItem(KEY)||'{}'),o={};Object.keys(x).forEach(function(k){var p=k.split('|'),q=parseInt(x[k],10);if(SITE.colors[p[0]]&&SITE.colors[p[0]].available&&SITE.sizes.indexOf(p[1])>-1&&(!p[2]||['set','pants','hoodie'].indexOf(p[2])>-1)&&q>0)o[p[0]+'|'+p[1]+'|'+(p[2]||'set')]=Math.min(q,SITE.max)});return o}catch(e){return {}}}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(bag))}catch(e){}}
   function count(){return Object.keys(bag).reduce(function(n,k){return n+bag[k]},0)}
-  var prices={set:198,pants:96,hoodie:126},names={set:'Crest Tracksuit',pants:'Crest Pants',hoodie:'Crest Hoodie'};function piece(k){return k.split('|')[2]||'set'}function total(){return Object.keys(bag).reduce(function(n,k){return n+bag[k]*prices[piece(k)]},0)}
+  var prices={set:200,pants:96,hoodie:120.99},names={set:'Crest Tracksuit',pants:'Crest Pants',hoodie:'Crest Hoodie'};function piece(k){return k.split('|')[2]||'set'}function total(){return Object.keys(bag).reduce(function(n,k){return n+bag[k]*prices[piece(k)]},0)}
   function productName(c){return 'Son of Kings Crest Tracksuit in '+colorName(c)}
 
   var joinBody='Please add me to Son of Kings product and release updates.';
