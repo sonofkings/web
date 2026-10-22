@@ -14,7 +14,7 @@
     ]
   },
   "build": {
-    "command": "node tests/paypal.test.cjs && node tests/inventory.test.cjs"
+    "command": "npm test"
   },
   "durable_objects": {
     "bindings": [

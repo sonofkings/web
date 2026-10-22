@@ -8,3 +8,11 @@ node_modules/
 .wrangler/
 tests/
 api/inventory.mjs
+package.json
+package-lock.json
+.git
+/node_modules/**
+/.git
+/.wrangler/**
+/api/**
+/tests/**

@@ -173,11 +173,32 @@
 
         <p class="purchase-note" id="purchase-note">$200 USD for one complete set. $10 shipping per order. Tax reviewed at checkout.</p>
         <ul class="terms" id="terms">
-          <li><span aria-hidden="true">↗</span><span>Pay securely with PayPal</span></li>
+          <li><span aria-hidden="true">↗</span><span>Pay securely with Stripe</span></li>
           <li><span aria-hidden="true">↗</span><span>Tracked shipping</span></li>
           <li><span aria-hidden="true">↗</span><span>30-day returns</span></li>
         </ul>
-        <div class="product-facts" id="heritage"><details><summary>Shipping &amp; returns</summary><p>Shipping is $10 per order. Confirmed orders dispatch within two business days with tracking. Unworn items may be returned within 30 days. <a href="mailto:sonofkings591@gmail.com">Contact us</a> before sending a return.</p></details><details><summary>Product specs</summary><p>70% recycled polyester and 30% organic cotton. Finished with the Son of Kings crest and gold-tone hardware.</p></details></div>
+        <div class="product-facts" id="heritage">
+  <p class="eyebrow product-facts__label">Product information</p>
+  <details open class="collection-story">
+    <summary>Exclusive collection</summary>
+    <div class="collection-story__body">
+      <p class="collection-story__eyebrow">A Son of Kings exclusive</p>
+      <h3>One collection.<br>Never repeated.</h3>
+      <p>Each colorway, with the exception of Black, is limited to <strong>one complete set in each size</strong>. Once sold, that color and size will not be restocked.</p>
+      <p class="collection-story__closing">This is a one-time release. Once the entire collection sells out, it will be retired permanently.</p>
+    </div>
+  </details>
+  <details open class="collection-origin">
+    <summary>Fabric &amp; origin</summary>
+    <dl class="collection-origin__list">
+      <div><dt>Fabrics sourced in</dt><dd>Europe</dd></div>
+      <div><dt>Manufactured in</dt><dd>Pakistan x Global</dd></div>
+      <div><dt>Imported to</dt><dd>United States</dd></div>
+    </dl>
+  </details>
+  <details><summary>Product specs</summary><p>70% recycled polyester and 30% organic cotton. Finished with the Son of Kings crest, gold-tone hardware, and easy-to-remove interior tags for added comfort.</p></details>
+  <details><summary>Shipping &amp; returns</summary><p>Shipping is $10 per order. Confirmed orders dispatch within two business days with tracking. Unworn items may be returned within 30 days. <a href="mailto:sonofkings591@gmail.com">Contact us</a> before sending a return.</p></details>
+</div>
       </div>
     </div>
   </section>
@@ -249,7 +270,7 @@
       <div><p class="eyebrow eyebrow--gold">Questions</p><h2 class="h2" id="faq-title">A few answers.</h2></div>
       <div class="faq__list">
         <details><summary>Is Black the only edition for sale?</summary><p>All six colors are available in selected sizes. Choose a complete set or shop hoodies and pants separately.</p></details>
-        <details><summary>How does payment work?</summary><p>Your selected sizes and quantities carry into one checkout. Enter your shipping details and choose card or PayPal payment. Shipping is $10 per order. Card fields are securely provided by PayPal; Son of Kings does not collect or store your card details.</p></details>
+        <details><summary>How does payment work?</summary><p>Your selected sizes and quantities carry into one checkout. Enter your shipping details and choose an available card or wallet payment method. Shipping is $10 per order. Payment fields are securely provided by Stripe; Son of Kings does not collect or store your card details.</p></details>
         <details><summary>What is included?</summary><p>One Black Edition hoodie and one matching pair of trousers. Choose the complete set for $200, pants for $96, or hoodie for $120.99.</p></details>
         <details><summary>Can I return my order?</summary><p>Yes. Unworn items can be returned within 30 days. Contact us before sending anything back.</p></details>
       </div>
@@ -355,6 +376,6 @@
   <p>Use your browser’s zoom for a closer look at the details.</p>
 </dialog>
 <script src="assets/js/inventory.js?v=20261022-pricing"></script>
-<script src="assets/js/site.js?v=20261022-pricing" defer></script>
+<script src="assets/js/site.js?v=20261022-stripe-recovery" defer></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+{
+  "name": "sonofkings-web",
+  "version": "1.0.0",
+  "description": "Son of Kings storefront and embedded payments",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/paypal.test.cjs && node tests/inventory.test.cjs && node tests/stripe.test.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "stripe": "22.6.0"
+  },
+  "private": true
+}
