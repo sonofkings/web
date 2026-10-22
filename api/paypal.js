@@ -1,5 +1,5 @@
 const { createHmac, randomUUID, timingSafeEqual } = require('node:crypto');
-const PRICES={set:19800,pants:9600,hoodie:12600};
+const PRICES={set:20000,pants:9600,hoodie:12099};
 const NAMES={set:'Crest Tracksuit',pants:'Crest Pants',hoodie:'Crest Hoodie'};
 const inventory=require('../assets/js/inventory.js');
 const SIZES = new Set(inventory.sizes);
