@@ -11,7 +11,7 @@
   var status=node('p','','fine');status.setAttribute('role','status');root.appendChild(status);
   if(!config.live)root.appendChild(node('p','TEST CHECKOUT — no real payments.','checkout-message'));
   function say(t){if(!disposed)status.textContent=t}
-  function cleanup(){disposed=true;if(embedded)embedded.destroy()}
+  function cleanup(){if(disposed)return;disposed=true;if(embedded){var instance=embedded;embedded=null;instance.destroy()}}
   function paid(result){if(disposed)return;var matches=saved&&saved.id===result.id;try{if(matches&&localStorage.getItem('sok.bag.v2')===saved.snapshot)localStorage.removeItem('sok.bag.v2');if(matches)sessionStorage.removeItem('sok.stripe.pending')}catch(e){}callbacks.confirmed(result)}
   async function check(id){callbacks.busy(true);say('Confirming your payment…');try{var result=await request({action:'status',id:id});if(disposed)return;if(result.fulfilled){paid(result);return}say(result.status==='expired'?'This checkout expired. Your payment was not completed.':'Your payment is not confirmed yet. Check its status before starting another payment.');var retry=node('button','Check payment status','pay-link');retry.type='button';retry.onclick=function(){retry.remove();check(id)};root.appendChild(retry);if(result.status==='expired'){sessionStorage.removeItem('sok.stripe.pending');var back=node('a','Return to your bag','pay-link');back.href='/checkout/';root.appendChild(back)}}catch(e){say(e.message);var retry=node('button','Retry payment status','pay-link');retry.onclick=function(){retry.remove();check(id)};root.appendChild(retry)}}
   if(returned){await check(returned);return cleanup}
