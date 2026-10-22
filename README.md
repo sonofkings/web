@@ -68,3 +68,27 @@ A passing build is not proof that live payments are enabled or end-to-end tested
 ## Inventory
 
 Inventory v1 begins with 39 matched sets, 2 extra hoodies and 1 extra pair of pants (41 hoodies / 40 pants). The authoritative stock is initialized once in the Inventory Durable Object, never reset by a redeploy. `/api/inventory` exposes current availability with no caching. Client quantities are advisory; checkout enforces combined component demand on the server. An unapproved or abandoned PayPal order does not hold stock. A checkout that loses a race for stock is rejected before capture. Reserved payments with ambiguous results remain held and can be retried by order ID without deducting twice. Reconcile these holds against PayPal before restoring stock; there is no automated restock or inventory admin UI yet. Future quantity updates must modify durable state rather than the initial seed.
+
+## Stripe migration (activation pending)
+
+Stripe Checkout can be embedded on `/checkout/`. It remains disabled until the hosting settings below are configured. PayPal remains the current payment provider until Stripe is enabled. Existing PayPal pending payments can still be confirmed after activation. `/api/checkout` aliases the current Stripe handler; the obsolete $99 hosted-checkout implementation is removed.
+
+Use a restricted Stripe API key where possible, with the permissions needed to create, retrieve and expire Checkout Sessions and any resources required by Checkout inline pricing. Store these in Cloudflare secrets/settings, never Git:
+
+- `STRIPE_RESTRICTED_KEY` (preferred; `STRIPE_SECRET_KEY` also supported)
+- `STRIPE_PUBLISHABLE_KEY` from the same account and mode
+- `STRIPE_WEBHOOK_SECRET` for `/api/stripe/webhook`
+- `STRIPE_ENABLED=true` only after the integration and webhook are tested
+- `CHECKOUT_TAX_BPS=0` preserves the owner's explicit no-tax setting
+
+Register webhook events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, and `checkout.session.expired`. The handler verifies Stripe's signature against the raw request body and re-reads the Checkout Session before updating inventory. It rejects mismatched environment, currency, unknown sessions and unexpected paid totals. Duplicate events do not consume or restore stock twice. Failure returns a retryable non-success response.
+
+For a sandbox deployment only, add `STRIPE_SANDBOX_ENABLED=true` with matching test keys. Sandbox checkout prominently says TEST CHECKOUT and uses a separate `stripe-sandbox` inventory namespace. Never enable sandbox mode on the customer-facing production site. Sandbox reservations cannot change `store` inventory.
+
+Checkout reserves shared components before exposing a session to a buyer. Unpaid sessions expire after 30 minutes; verified expiration releases their inventory. Paid and delayed-payment sessions retain stock. Editing the bag first expires the open Stripe session, then releases stock. Reconcile missed expiration events through Stripe event retries before manually changing quantities. The webhook must be operational before enabling checkout. There is no paid-order refund/restock workflow in this change.
+
+Automated validation uses mocked Stripe API responses plus the real SDK and inventory coordinator; it does not charge a card. Remaining activation checks: real sandbox card success/decline/authentication, wallet and redirect flows, delayed payments, webhook delivery/retries, refresh and bag editing, desktop/mobile rendering, and live merchant eligibility. This branch is preparation, not evidence of a completed live payment.
+
+## Stripe recovery — October 22, 2026
+
+Stripe is the customer checkout provider. New checkout fails closed rather than silently switching to PayPal when Stripe cannot load. Existing pending PayPal payments retain confirmation recovery. Current prices are $200/set, $120.99/hoodie, $96/pants, with $10 flat shipping and the explicit zero-tax setting. The Stripe branch must be merged to main so later catalog deployments retain the processor integration. Webhook signing secrets belong in encrypted Cloudflare secrets.
